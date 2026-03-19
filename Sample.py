@@ -1,4 +1,5 @@
-from .RawVault import *
+from .pysparkvault.RawVault import *
+from .pysparkvault.DataVaultShared import RawVaultConfiguration, ColumnDefinition, SatelliteDefinition, ForeignKey, ColumnReference
 
 from pyspark.sql.types import BooleanType, StringType
 
