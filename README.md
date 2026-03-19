@@ -1,27 +1,36 @@
 # PySpark Playground
 
-A simple Python project to test PySpark algrothms for Data Vault transformations on Spark.
+A simple Python project to test PySpark algorithms for Data Vault transformations on Spark.
 
 ## Development
 
 **System Requirements**
 
-- [Conda](https://docs.conda.io/en/latest/miniconda.html)
-- [Poetry](https://python-poetry.org/)
+- Python 3.12+
+- [uv](https://docs.astral.sh/uv/)
+- Java 17+
 
-To start development of the project. Create a local development environment.
+To start development, create a virtual environment and install dependencies:
 
 ```bash
-$ cd pyspark-datavault
-$ conda create -p ./env python=3.8
-$ conda activate ./env
-$ poetry install
+$ cd pyspark-vault
+$ uv venv
+$ make init-dev
 ```
 
-To run the tests of the project, execute the following command from project root.
+## Makefile Commands
+
+| Command         | Description                              |
+|-----------------|------------------------------------------|
+| `make init`     | Install core dependencies                |
+| `make init-dev` | Install core + dev dependencies          |
+| `make test`     | Run tests                                |
+| `make build`    | Build the wheel package into `dist/`     |
+
+## Running Tests
 
 ```bash
-$ python -m pytest tests
+$ make test
 ```
 
 ## Test Data
