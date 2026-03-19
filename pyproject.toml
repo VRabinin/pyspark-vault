@@ -1,26 +1,21 @@
-[project]
+[tool.poetry]
 name = "pyspark-datavault"
 version = "0.1.0"
 description = "A PySpark library to support development of a DataVault on basis of Spark and Delta Lake."
-authors = [{name = "Michael Wellner", email = "michaelwellner@kpmg.com"}]
-license = {text = "Apache-2.0"}
-requires-python = ">=3.8"
-dependencies = [
-    "pydantic>=1.8.2,<2",
-    "behave>=1.2.6,<2",
-]
+authors = ["Michael Wellner <michaelwellner@kpmg.com>"]
+license = "Apache-2.0"
 
-[project.optional-dependencies]
-dev = [
-    "pyspark>=3.5.0,<3.6",
-    "delta-spark>=3.1.0,<3.2",
-    "pytest>=6.2.5",
-    "chispa>=0.8.2",
-]
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.8.2"
+behave = "^1.2.6"
+
+[tool.poetry.dev-dependencies]
+pyspark = "3.2.0"
+delta-spark = "^1.1.0"
+pytest = "^6.2.5"
+chispa = "^0.8.2"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["pysparkvault"]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
