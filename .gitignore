@@ -138,3 +138,4 @@ dmypy.json
 # Dev Tools
 .idea
 /config/database.ini
+.quarantine
