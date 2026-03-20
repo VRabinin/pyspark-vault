@@ -1,0 +1,3 @@
+$__HKEY,load_date,record_source,supplier_id
+hash1,2024-01-01T00:00:00Z,TEST,S001
+hash2,2024-01-01T00:00:00Z,TEST,S002

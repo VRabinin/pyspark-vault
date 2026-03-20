@@ -14,7 +14,7 @@ dependencies = [
 dev = [
     "pyspark>=3.5.0,<3.6",
     "delta-spark>=3.1.0,<3.2",
-    "pytest>=6.2.5",
+    "pytest>=8.0.0",
     "chispa>=0.8.2",
 ]
 

@@ -1,0 +1,5 @@
+load_datetime,load_operation,customer_id,name,email,country
+2024-01-01T00:00:00Z,2,C001,Alice Müller,alice@example.com,DE
+2024-01-01T00:00:00Z,2,C002,Bob Smith,bob@example.com,US
+2024-01-01T00:00:00Z,2,C003,Carlos Ruiz,carlos@example.com,ES
+2024-02-01T00:00:00Z,4,C001,Alice Müller,alice@newdomain.com,DE

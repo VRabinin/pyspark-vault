@@ -156,6 +156,7 @@ class RawVault:
             ColumnDefinition(self.conventions.hkey_column_name(), StringType()), # TODO mw: Add comments to column
             ColumnDefinition(self.conventions.hdiff_column_name(), StringType()),
             ColumnDefinition(self.conventions.load_date_column_name(), TimestampType()),
+            ColumnDefinition(self.conventions.load_end_date_column_name(), TimestampType()),
         ] + attribute_columns
 
         if self.config.optimize_partitioning:
@@ -913,12 +914,16 @@ class RawVault:
     def load_satellite_from_prepared_stage_dataframe(self, staged_df: DataFrame, satellite: SatelliteDefinition) -> None:
         """
         Loads a satellite from a data frame which contains prepared an staged data.
+        Computes load_end_date for all records using a LEAD window function over the full
+        satellite, so previously-current records are end-dated when superseded.
 
         :param staged_df - The dataframe which contains the staged and prepared data for the satellite.
         :param satellite - The satellite definition.
         """
         sat_table_name = f'{self.config.raw_database_name}.{satellite.name}'
-        sat_df = self.spark.table(sat_table_name)
+        # Materialize existing data via localCheckpoint to sever lineage from the Hive table,
+        # which is required before overwriting the same table with the combined result.
+        sat_df = self.spark.table(sat_table_name).localCheckpoint(eager=True)
 
         allowed_cdc_operations = [
             self.conventions.CDC_OPS.CREATE, self.conventions.CDC_OPS.UPDATE, 
@@ -943,12 +948,31 @@ class RawVault:
         join_condition = [sat_df[self.conventions.hkey_column_name()] == staged_df[self.conventions.hkey_column_name()], \
             sat_df[self.conventions.load_date_column_name()] == staged_df[self.conventions.load_date_column_name()]]
 
-        staged_df = staged_df\
+        new_records_df = staged_df \
             .join(sat_df, join_condition, how='left_anti') \
             .distinct()
 
+        # Drop stale load_end_date from existing records so it can be recomputed for the full table.
+        # DataFrame.drop() silently ignores columns that don't exist (first-time load scenario).
+        sat_base_df = sat_df.drop(self.conventions.load_end_date_column_name())
+        combined_df = sat_base_df.union(new_records_df)
+
+        # Recompute load_end_date for every record: LEAD(load_date) within each hkey partition,
+        # ordered by load_date. The latest record per hkey (still active) receives the sentinel
+        # value 9999-12-31 23:59:00 instead of NULL to simplify range-based queries.
+        window_spec = Window.partitionBy(self.conventions.hkey_column_name()) \
+            .orderBy(self.conventions.load_date_column_name())
+
+        combined_df = combined_df.withColumn(
+            self.conventions.load_end_date_column_name(),
+            F.coalesce(
+                F.lead(self.conventions.load_date_column_name()).over(window_spec),
+                F.lit(self.conventions.LOAD_END_DATE_HIGH_WATERMARK).cast('timestamp')
+            )
+        )
+
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, satellite.name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(combined_df, self.config.raw_database_name, satellite.name, bucket_columns=bucket_columns, mode="overwrite")
 
     def load_effectivity_satellite_from_prepared_stage_dataframe(self, staged_df: DataFrame, sat_effectivity_table_name: str) -> None:
         """

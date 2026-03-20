@@ -70,7 +70,9 @@ class DataVaultConventions:
         valid_from='VALID_FROM',
         valid_to='VALID_TO',
         cdc_operation='OPERATION',
-        cdc_ops = CDCOperations()) -> None:
+        load_end_date_high_watermark: str = '9999-12-31 23:59:59',
+        cdc_ops = CDCOperations()
+        ) -> None:
         """
         Common conventions including prefixes, naming, etc. for the Data Vault.
         """
@@ -93,6 +95,7 @@ class DataVaultConventions:
         self.VALID_FROM = valid_from
         self.VALID_TO = valid_to
         self.CDC_OPERATION = cdc_operation
+        self.LOAD_END_DATE_HIGH_WATERMARK = load_end_date_high_watermark 
         self.CDC_OPS = cdc_ops
 
     def cdc_operation_column_name(self) -> str:
@@ -167,7 +170,7 @@ class DataVaultConventions:
         hub prefix. If the prefix is already present, it will not be added.
         """
 
-        source_table_name = source_table_name.upper()
+        # source_table_name = source_table_name.upper() --
 
         if source_table_name.startswith(self.HUB):
             return source_table_name
@@ -180,7 +183,7 @@ class DataVaultConventions:
         satellite prefix. If the prefix is already present, it will not be added.
         """
 
-        name = name.upper()
+        # name = name.upper() -- No upper case for satellite tables, as they are used in joins and thus need to match the case of the base table
 
         if name.startswith(self.SAT):
             return name
@@ -192,7 +195,7 @@ class DataVaultConventions:
         Returns a name of a LINK table, based on the base name. This method ensures, that the name is prefixed with the configured
         hub prefix. If the prefix is already present, it will not be added.
         """
-        name = name.upper()
+        # name = name.upper() -- No upper case for LINK tables, as they are used in joins and thus need to match the case of the base table
 
         if name.startswith(self.LINK):
             return name
@@ -204,7 +207,7 @@ class DataVaultConventions:
         Returns a name of a effectivity SAT (satellite) table, based on the base name. This method ensures, that the name is prefixed with the configured
         satellite prefix. If the prefix is already present, it will not be added.
         """
-        name = name.upper()
+        # name = name.upper(). -- No upper case for effectivity satellites, as they are used in joins and thus need to match the case of the base table
 
         if name.startswith(f'{self.SAT}{self.EFFECTIVTY}'):
             return name
@@ -217,7 +220,7 @@ class DataVaultConventions:
         Returns a name of a PIT (point-in-time-table) table, based on the base name. This method ensures, that the name is prefixed with the configured
         hub prefix. If the prefix is already present, it will not be added.
         """
-        name = name.upper()
+        # name = name.upper() -- No upper case for PIT tables, as they are used in joins and thus need to match the case of the base table
 
         if name.startswith(self.PIT):
             return name
@@ -229,7 +232,7 @@ class DataVaultConventions:
         Returns a name of a REF (reference) table, base on the base name.  This method ensures, that the name is prefixed with the configured
         reference prefix. If the prefix is already present, it will not be added.
         """
-        name = name.upper()
+        # name = name.upper() -- No upper case for REF tables, as they are used in joins and thus need to match the case of the base table
 
         if name.startswith(self.REF):
             return name

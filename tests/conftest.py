@@ -36,4 +36,5 @@ def spark():
         .config("spark.sql.catalog.local", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
         .config("spark.driver.extraJavaOptions", _JAVA17_ADD_OPENS) \
         .config("spark.executor.extraJavaOptions", _JAVA17_ADD_OPENS) \
+        .config("spark.sql.session.timeZone", "UTC") \
         .getOrCreate()

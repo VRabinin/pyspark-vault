@@ -2,6 +2,11 @@
 .vscode
 .DS_Store
 
+# Test output (inspectable integration test results)
+tests/output/
+spark-warehouse/
+spark-warehouse-*/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
