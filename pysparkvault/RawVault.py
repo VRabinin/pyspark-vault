@@ -198,7 +198,7 @@ class RawVault:
         self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self.config.staging_prepared_database_name} LOCATION '{self.config.staging_prepared_base_path}'""")
         self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self.config.raw_database_name} LOCATION '{self.config.raw_base_path}'""")
 
-    def load_hub_from_prepared_staging_table(self, staging_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = []) -> None:
+    def load_hub_from_prepared_staging_table(self, staging_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = [], effectivity_satellite: bool = True) -> None:
         """
         Loads a hub from a prepared staging table. The prepared staging table must have a HKEY calculated.
 
@@ -206,13 +206,14 @@ class RawVault:
         :param hub_table_name - The name of the hub table in the raw vault.
         :param business_key_column_names - The list of columns which contribute to the business key of the hub.
         :param satellites - Optional. A list of satellites which is loaded from the prepared staging table. The form of the tuple is.
+        :param effectivity_satellite - If True (default), the effectivity satellite is loaded for the hub.
         """
 
         stage_table_name = f'{self.config.staging_prepared_database_name}.{staging_table_name}'
         staged_df = self.spark.table(stage_table_name)
-        self.load_hub(staged_df, hub_table_name, business_key_column_names, satellites)
+        self.load_hub(staged_df, hub_table_name, business_key_column_names, satellites, effectivity_satellite)
 
-    def load_hub_from_source_table(self, source_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = []) -> None:
+    def load_hub_from_source_table(self, source_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = [], effectivity_satellite: bool = True) -> None:
         """
         Loads a hub from a source table. The prepared staging table must have a HKEY calculated.
 
@@ -220,12 +221,13 @@ class RawVault:
         :param hub_table_name - The name of the hub table in the raw vault.
         :param business_key_column_names - The list of columns which contribute to the business key of the hub.
         :param satellites - Optional. A list of satellites which is loaded from the prepared staging table. The form of the tuple is.
+        :param effectivity_satellite - If True (default), the effectivity satellite is loaded for the hub.
         """
         
         staged_df = self.stage_table_df(f"{source_table_name}.parquet", business_key_column_names)
-        self.load_hub(staged_df, hub_table_name, business_key_column_names, satellites)
+        self.load_hub(staged_df, hub_table_name, business_key_column_names, satellites, effectivity_satellite)
     
-    def load_hub(self, staged_df: DataFrame, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = []) -> None:
+    def load_hub(self, staged_df: DataFrame, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = [], effectivity_satellite: bool = True) -> None:
         """
         Loads a hub from a staged DataFrame.
 
@@ -233,6 +235,7 @@ class RawVault:
         :param hub_table_name - The name of the hub table in the raw vault.
         :param business_key_column_names - The list of columns which contribute to the business key of the hub.
         :param satellites - Optional. A list of satellites which is loaded from the prepared staging table. The form of the tuple is.
+        :param effectivity_satellite - If True (default), the effectivity satellite is loaded for the hub.
         """
 
         sat_effectivity_table_name = self.conventions.sat_effectivity_name(self.conventions.remove_prefix(hub_table_name))
@@ -246,7 +249,8 @@ class RawVault:
             .withColumn(self.conventions.load_date_column_name(), F.current_timestamp()) \
             .withColumn(self.conventions.record_source_column_name(), F.lit(self.config.source_system_name)) \
 
-        self.load_effectivity_satellite_from_prepared_stage_dataframe(staged_df, sat_effectivity_table_name)
+        if effectivity_satellite:
+            self.load_effectivity_satellite_from_prepared_stage_dataframe(staged_df, sat_effectivity_table_name)
 
         for satellite in satellites:
             self.load_satellite_from_prepared_stage_dataframe(staged_df, satellite)
