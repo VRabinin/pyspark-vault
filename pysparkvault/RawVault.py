@@ -1,6 +1,8 @@
+import os
+
 import pyspark.sql.functions as F
 
-from typing import List
+from typing import List, Optional
 
 from pyspark.sql import DataFrame
 from pyspark.sql.types import *
@@ -26,7 +28,7 @@ class RawVaultConfiguration:
         Configuration parameters for the DataVault automation.
 
         :param source_system_name - The (technical) name of the source system. This name is used for naming resources. The allowed pattern is [A-Z0-9_]{1,}.
-        :param staging_base_path - The base path of thse staged source files (w/o trailing slash).
+        :param staging_base_path - The base path of the staged source files (w/o trailing slash).
         :param staging_prepared_base_path - The base path of for the temporary prepared staging tables.
         :param raw_base_path - The base path of the raw layer on the data lake.
         :param staging_load_date_column_name - The column name which should be used as a load date from the staged tables.
@@ -1017,16 +1019,17 @@ class RawVault:
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
         self.__write_table(staged_df, self.config.raw_database_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
 
-    def stage_table(self, name: str, source: str, hkey_columns: List[str] = []) -> None: # TODO mw: Multiple HKeys, HDiffs?
+    def stage_table(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging database.
 
         :param name - The name of the table in the prepared staging area.
         :param source - The source file path, relative to staging_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
+        :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
         """
 
-        df = self.stage_table_df(source, hkey_columns)
+        df = self.stage_table_df(source, hkey_columns, default_cdc_operation)
 
         # write staged table into staging area.
         if self.conventions.hkey_column_name() in df.columns:
@@ -1036,22 +1039,39 @@ class RawVault:
 
         self.__write_table(df, self.config.staging_prepared_database_name, name, bucket_columns=bucket_columns, mode="overwrite")
 
-    def stage_table_df(self, source: str, hkey_columns: List[str] = []) -> DataFrame:
+    _SUPPORTED_FORMATS = {
+        '.parquet': {'format': 'parquet', 'options': {}},
+        '.csv':     {'format': 'csv',     'options': {'header': 'true', 'inferSchema': 'true'}},
+    }
+
+    def stage_table_df(self, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> DataFrame:
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging database.
+        Supported source file formats: Parquet (.parquet), CSV (.csv).
 
         :param source - The source file path, relative to staging_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
+        :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
         """
 
-        # load source data from Parquet file.
-        df = self.spark.read.load(f'{self.config.staging_base_path}/{source}', format='parquet')
+        ext = os.path.splitext(source)[1].lower()
+        fmt = self._SUPPORTED_FORMATS.get(ext)
+        if fmt is None:
+            raise ValueError(f"Unsupported source file format '{ext}'. Supported formats: {list(self._SUPPORTED_FORMATS.keys())}")
+
+        # load source data from file.
+        df = self.spark.read.options(**fmt['options']).load(f'{self.config.staging_base_path}/{source}', format=fmt['format'])
 
         # add DataVault specific columns
         df = df \
             .withColumnRenamed(self.config.staging_load_date_column_name, self.conventions.load_date_column_name()) \
             .withColumnRenamed(self.config.staging_cdc_operation_column_name, self.conventions.cdc_operation_column_name()) \
             .withColumn(self.conventions.record_source_column_name(), F.lit(self.config.source_system_name))
+
+        # if the source has no CDC operation column and a default was provided, inject it.
+        if self.conventions.cdc_operation_column_name() not in df.columns:
+            if default_cdc_operation is not None:
+                df = df.withColumn(self.conventions.cdc_operation_column_name(), F.lit(default_cdc_operation))
 
         # update load_date in case of snapshot load (CDC Operation < 1).
         if self.config.snapshot_override_load_date_based_on_column in df.columns:
