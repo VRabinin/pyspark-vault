@@ -63,12 +63,13 @@ class RawVault:
         self.config = config
         self.conventions = conventions
 
-    def create_hub(self, name: str, business_key_columns: List[ColumnDefinition]) -> None:
+    def create_hub(self, name: str, business_key_columns: List[ColumnDefinition], effectivity_satellite: bool = True) -> None:
         """
         Creates a hub table in the raw database. Does only create the table if it does not exist yet.
 
         :param name - The name of the hub table, usually starting with `HUB__`.
         :param business_key_columns - The columns for the hub are the keys which compose the business key. Tuple contains (name, type).
+        :param effectivity_satellite - If True (default), an effectivity satellite is also created for the hub.
         """
         columns: List[ColumnDefinition] = [
             ColumnDefinition(self.conventions.hkey_column_name(), StringType()), # TODO mw: Add comments to column
@@ -82,14 +83,16 @@ class RawVault:
         else:
             self.__create_external_table(self.config.raw_database_name, self.conventions.hub_name(name), columns)
 
-        self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
+        if effectivity_satellite:
+            self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
 
-    def create_link(self, name: str, column_names: List[str]) -> None: # TODO MW: Specify whether Link is History/ Transaction
+    def create_link(self, name: str, column_names: List[str], effectivity_satellite: bool = True) -> None: # TODO MW: Specify whether Link is History/ Transaction
         """
         Creates a link table in the raw database. Does only create the table if it does not exist yet.
 
         :param name - The name of the link table, usually starting with `LNK__`.
         :param column_names - The name of the columns which containg hash keys pointing to other hubs.
+        :param effectivity_satellite - If True (default), an effectivity satellite is also created for the link.
         """
         columns: List[ColumnDefinition] = [
             ColumnDefinition(self.conventions.hkey_column_name(), StringType()), # TODO mw: Add comments to column
@@ -103,7 +106,8 @@ class RawVault:
         else:
             self.__create_external_table(self.config.raw_database_name, self.conventions.link_name(name), columns)
 
-        self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
+        if effectivity_satellite:
+            self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
 
     def create_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition]) -> None:
         """
