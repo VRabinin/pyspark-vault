@@ -990,7 +990,7 @@ class RawVault:
         combined_df = combined_df.withColumn(
             self.conventions.load_end_date_column_name(),
             F.coalesce(
-                F.lead(self.conventions.load_date_column_name()).over(window_spec),
+                F.lead(self.conventions.load_date_column_name()).over(window_spec) - F.expr("INTERVAL 1 SECONDS"),
                 F.lit(self.conventions.LOAD_END_DATE_HIGH_WATERMARK).cast('timestamp')
             )
         )

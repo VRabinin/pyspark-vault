@@ -1,5 +1,5 @@
 dv__hkey,dv__hdiff,name,email,country,dv__ldts_end
-928c6512b3a8a0dc74a93ee63e77842a,2a807bea0aea193f38e5ba6b1b29bdf9,Alice Müller,alice@example.com,DE,2024-02-01 00:00:00
+928c6512b3a8a0dc74a93ee63e77842a,2a807bea0aea193f38e5ba6b1b29bdf9,Alice Müller,alice@example.com,DE,2024-01-31 23:59:59
 928c6512b3a8a0dc74a93ee63e77842a,49e3299b704391f19219a77508ae210b,Alice Müller,alice@newdomain.com,DE,9999-12-31 23:59:59
 dd21c430c85fb4208fa08ed975561e3c,73dc247dcb02c78940c01fa7e1f879b2,Bob Smith,bob@example.com,US,9999-12-31 23:59:59
 5027ad6785b2ae53c4cbf2bdfd5ecf89,3f268bd3122405fcff4813ea96b17cf7,Carlos Ruiz,carlos@example.com,ES,9999-12-31 23:59:59
