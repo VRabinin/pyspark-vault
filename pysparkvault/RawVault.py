@@ -74,7 +74,7 @@ class RawVault:
         self.config = config
         self.conventions = conventions
 
-    def create_hub(self, name: str, business_key_columns: List[ColumnDefinition], effectivity_satellite: bool = True) -> None:
+    def create_hub(self, name: str, business_key_columns: List[ColumnDefinition], force_recreate: bool = False, effectivity_satellite: bool = True) -> None:
         """
         Creates a hub table in the raw schema. Does only create the table if it does not exist yet.
 
@@ -90,14 +90,14 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns, force_recreate=force_recreate)
 
         if effectivity_satellite:
             self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
 
-    def create_link(self, name: str, column_names: List[str], effectivity_satellite: bool = True) -> None: # TODO MW: Specify whether Link is History/ Transaction
+    def create_link(self, name: str, column_names: List[str], effectivity_satellite: bool = True, force_recreate: bool = False) -> None: # TODO MW: Specify whether Link is History/ Transaction
         """
         Creates a link table in the raw schema. Does only create the table if it does not exist yet.
 
@@ -113,14 +113,14 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns, force_recreate=force_recreate)
 
         if effectivity_satellite:
             self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
 
-    def create_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition]) -> None:
+    def create_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition], force_recreate: bool = False) -> None:
         """
         Creates a reference table in the raw vault. Does only create the table if it does not exist yet.
 
@@ -136,11 +136,11 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [id_column.name, self.conventions.load_date_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, force_recreate=force_recreate)
 
-    def create_code_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition]) -> None:
+    def create_code_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition], force_recreate: bool = False) -> None:
         """
         Creates a special reference table in the raw vault. This reference table may be used for a set of reference tables which have a similar schema (code reference tables). 
         Does only create the table if it does not exist yet.
@@ -158,11 +158,11 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.ref_group_column_name(), id_column.name, self.conventions.load_date_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, force_recreate=force_recreate)
 
-    def create_satellite(self, name: str, attribute_columns: List[ColumnDefinition]) -> None:
+    def create_satellite(self, name: str, attribute_columns: List[ColumnDefinition], force_recreate: bool = False) -> None:
         """
         Creates a satellite table in the raw vault. Does only create the table if it does not exist yet.
 
@@ -178,11 +178,11 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, force_recreate=force_recreate)
 
-    def create_effectivity_satellite(self, name: str) -> None:
+    def create_effectivity_satellite(self, name: str, force_recreate: bool = False) -> None:
         """
         Creates an effectivity satellite table in the raw schema. This satellite contains information about whether an instance is deleted or not. 
         Does only create the table if it does not exist yet.
@@ -198,9 +198,9 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns, force_recreate=force_recreate)
         else:
-            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, force_recreate=force_recreate)
 
     def _qualified_schema(self, schema: str) -> str:
         """Returns catalog.schema when a catalog is configured for the given schema, otherwise just schema."""
@@ -1105,10 +1105,12 @@ class RawVault:
 
         if len(hkey_columns) > 0:
             df = df.withColumn(self.conventions.hkey_column_name(), DataVaultFunctions.hash(hkey_columns))
+            
+        # TODO: Create facility for adding extra calculated fields or rename the existing ones (e.g. for CDC operation code translation or similar) without the need to modify the code of RawVault itself.
 
         return df
 
-    def __create_table(self, base_path: str, schema: str, name: str, columns: List[ColumnDefinition], bucket_columns: List[str] = []) -> None:
+    def __create_table(self, base_path: str, schema: str, name: str, columns: List[ColumnDefinition], force_recreate: bool = False, bucket_columns: List[str] = []) -> None:
         """
         :param base_path - The ABFS base path under which the table data is stored.
         :param schema - The schema name for catalog registration.
@@ -1119,9 +1121,9 @@ class RawVault:
         table_schema = StructType([ StructField(c.name, c.type, c.nullable) for c in columns ])
         df: DataFrame = self.spark.createDataFrame([], table_schema)
 
-        self.__write_table(df, base_path, schema, name, bucket_columns=bucket_columns, mode="ignore")
+        self.__write_table(df, base_path, schema, name, bucket_columns=bucket_columns, force_recreate=force_recreate, mode="ignore")
 
-    def __write_table(self, df: DataFrame, base_path: str, schema: str, name: str, bucket_columns: List[str] = [], mode: str = "append"):
+    def __write_table(self, df: DataFrame, base_path: str, schema: str, name: str, bucket_columns: List[str] = [], force_recreate: bool = False, mode: str = "append"):
         """
         Writes a DataFrame using an explicit ABFS path and catalog registration.
 
@@ -1133,16 +1135,21 @@ class RawVault:
         :param mode - The write mode.
         """
 
+        path = f'{base_path}/{schema}/{name}'
+        if force_recreate:
+            self.spark.sql(f"DROP TABLE IF EXISTS {self._qualified_table(schema, name)}")
+
         if self.config.optimize_partitioning and bucket_columns:
             df \
                 .write \
                 .bucketBy(self.config.partition_size, bucket_columns) \
                 .mode(mode) \
-                .option("path", f'{base_path}/{schema}/{name}') \
+                .option("path", path) \
                 .saveAsTable(self._qualified_table(schema, name))
         else:
-            path = f'{base_path}/{schema}/{name}'
             df.write.format("delta").mode(mode).save(path)
-            self.spark.sql(f"CREATE TABLE IF NOT EXISTS {self._qualified_table(schema, name)} USING DELTA LOCATION '{path}'")
+            
+        self.spark.sql(f"CREATE TABLE IF NOT EXISTS {self._qualified_table(schema, name)} USING DELTA LOCATION '{path}'")
+
         
 

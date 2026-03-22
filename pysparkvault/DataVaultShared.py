@@ -11,12 +11,12 @@ class DataVaultFunctions:
     @staticmethod
     def hash(column_names: List[str]) -> Column:
         """
-        Calculates a MD5 hash of provided columns.
+        Calculates a SHA-256 hash of provided columns.
 
         :param column_names - The columns which should be included in the hash.
         """
         columns = list(map(lambda c: F.col(c), column_names))
-        return F.md5(F.concat_ws(',', *columns))
+        return F.sha2(F.concat_ws(',', *columns), 256)
 
     @staticmethod
     def to_columns(column_names: List[str]) -> List[Column]:

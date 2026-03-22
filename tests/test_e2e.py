@@ -134,12 +134,12 @@ def vault(spark, e2e_config, conventions):
 def test_e2e_create_schema(vault):
     vault.create_hub("customer", [
         ColumnDefinition("customer_id", StringType()),
-    ])
+    ], force_recreate=True)
     vault.create_satellite("customer", [
         ColumnDefinition("name", StringType()),
         ColumnDefinition("email", StringType()),
         ColumnDefinition("country", StringType()),
-    ])
+    ], force_recreate=True)
     vault.create_hub("order", [
         ColumnDefinition("order_id", StringType()),
     ])
