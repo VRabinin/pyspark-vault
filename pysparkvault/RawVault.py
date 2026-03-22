@@ -16,29 +16,38 @@ class RawVaultConfiguration:
 
     def __init__(
         self, source_system_name: str, 
-        staging_base_path: str, 
-        staging_prepared_base_path: str, 
-        raw_base_path: str, 
+        landing_zone_base_path: str, 
+        staging_base_path: str,
+        staging_schema_name: str,
+        raw_base_path: str,
+        raw_schema_name: str,
         staging_load_date_column_name: str, 
         staging_cdc_operation_column_name: str,
         snapshot_override_load_date_based_on_column: str,
         optimize_partitioning: bool = True,
-        partition_size: int = 5) -> None:
+        partition_size: int = 5,
+        staging_catalog_name: Optional[str] = None,
+        raw_catalog_name: Optional[str] = None
+        ) -> None:
         """
         Configuration parameters for the DataVault automation.
 
         :param source_system_name - The (technical) name of the source system. This name is used for naming resources. The allowed pattern is [A-Z0-9_]{1,}.
-        :param staging_base_path - The base path of the staged source files (w/o trailing slash).
-        :param staging_prepared_base_path - The base path of for the temporary prepared staging tables.
+        :param landing_zone_base_path - The base path of the staged source files (w/o trailing slash).
+        :param staging_base_path - The base path of for the temporary prepared staging tables.
+        :param staging_schema_name - The name of the prepared staging schema.
         :param raw_base_path - The base path of the raw layer on the data lake.
+        :param raw_schema_name - The name of the raw schema.
         :param staging_load_date_column_name - The column name which should be used as a load date from the staged tables.
         :param staging_cdc_operation_column_name - The name of the column which contains the CDC operation number.
         :param snapshot_override_load_date_based_on_column - In case of a snapshot, the load date might be overriden by the value of this column.
+        :param raw_catalog_name - Optional catalog (lakehouse) name for the raw schema. When set, tables are registered as catalog.schema.table.
+        :param staging_catalog_name - Optional catalog (lakehouse) name for the staging prepared schema.
         """
 
         self.source_system_name = source_system_name
+        self.landing_zone_base_path = landing_zone_base_path
         self.staging_base_path = staging_base_path
-        self.staging_prepared_base_path = staging_prepared_base_path
         self.raw_base_path = raw_base_path
 
         self.staging_load_date_column_name = staging_load_date_column_name
@@ -48,8 +57,10 @@ class RawVaultConfiguration:
         self.optimize_partitioning = optimize_partitioning
         self.partition_size = partition_size
 
-        self.staging_prepared_database_name = f'{self.source_system_name}__staging_prepared'.lower()
-        self.raw_database_name = f'{self.source_system_name}__raw'.lower()
+        self.staging_schema_name = staging_schema_name.lower()
+        self.raw_schema_name = raw_schema_name.lower()
+        self.raw_catalog_name = raw_catalog_name
+        self.staging_catalog_name = staging_catalog_name
 
 
 class RawVault:
@@ -65,7 +76,7 @@ class RawVault:
 
     def create_hub(self, name: str, business_key_columns: List[ColumnDefinition], effectivity_satellite: bool = True) -> None:
         """
-        Creates a hub table in the raw database. Does only create the table if it does not exist yet.
+        Creates a hub table in the raw schema. Does only create the table if it does not exist yet.
 
         :param name - The name of the hub table, usually starting with `HUB__`.
         :param business_key_columns - The columns for the hub are the keys which compose the business key. Tuple contains (name, type).
@@ -79,16 +90,16 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.hub_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.hub_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.hub_name(name), columns)
 
         if effectivity_satellite:
             self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
 
     def create_link(self, name: str, column_names: List[str], effectivity_satellite: bool = True) -> None: # TODO MW: Specify whether Link is History/ Transaction
         """
-        Creates a link table in the raw database. Does only create the table if it does not exist yet.
+        Creates a link table in the raw schema. Does only create the table if it does not exist yet.
 
         :param name - The name of the link table, usually starting with `LNK__`.
         :param column_names - The name of the columns which containg hash keys pointing to other hubs.
@@ -102,9 +113,9 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.link_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.link_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.link_name(name), columns)
 
         if effectivity_satellite:
             self.create_effectivity_satellite(self.conventions.sat_effectivity_name(self.conventions.remove_prefix(name)))
@@ -125,9 +136,9 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [id_column.name, self.conventions.load_date_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.ref_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.ref_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns)
 
     def create_code_reference_table(self, name: str, id_column: ColumnDefinition, attribute_columns: List[ColumnDefinition]) -> None:
         """
@@ -147,9 +158,9 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.ref_group_column_name(), id_column.name, self.conventions.load_date_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.ref_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.ref_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.ref_name(name), columns)
 
     def create_satellite(self, name: str, attribute_columns: List[ColumnDefinition]) -> None:
         """
@@ -167,13 +178,13 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.sat_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.sat_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns)
 
     def create_effectivity_satellite(self, name: str) -> None:
         """
-        Creates an effectivity satellite table in the raw database. This satellite contains information about whether an instance is deleted or not. 
+        Creates an effectivity satellite table in the raw schema. This satellite contains information about whether an instance is deleted or not. 
         Does only create the table if it does not exist yet.
 
         :param name - The name of the satellite table, usually starting with `SAT__`.
@@ -187,16 +198,28 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-            self.__create_external_table(self.config.raw_database_name, self.conventions.sat_name(name), columns, bucket_columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns, bucket_columns)
         else:
-            self.__create_external_table(self.config.raw_database_name, self.conventions.sat_name(name), columns)
+            self.__create_table(self.config.raw_base_path, self.config.raw_schema_name, self.conventions.sat_name(name), columns)
+
+    def _qualified_schema(self, schema: str) -> str:
+        """Returns catalog.schema when a catalog is configured for the given schema, otherwise just schema."""
+        if schema == self.config.raw_schema_name and self.config.raw_catalog_name:
+            return f"{self.config.raw_catalog_name}.{schema}"
+        if schema == self.config.staging_schema_name and self.config.staging_catalog_name:
+            return f"{self.config.staging_catalog_name}.{schema}"
+        return schema
+
+    def _qualified_table(self, schema: str, name: str) -> str:
+        """Returns the fully-qualified catalog.schema.table (or schema.table if no catalog is set)."""
+        return f"{self._qualified_schema(schema)}.{name}"
 
     def initialize_database(self) -> None:
         """
         Initialize database.
         """
-        self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self.config.staging_prepared_database_name} LOCATION '{self.config.staging_prepared_base_path}'""")
-        self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self.config.raw_database_name} LOCATION '{self.config.raw_base_path}'""")
+        self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self._qualified_schema(self.config.staging_schema_name)} LOCATION '{self.config.staging_base_path}'""")
+        self.spark.sql(f"""CREATE DATABASE IF NOT EXISTS {self._qualified_schema(self.config.raw_schema_name)} LOCATION '{self.config.raw_base_path}'""")
 
     def load_hub_from_prepared_staging_table(self, staging_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = [], effectivity_satellite: bool = True) -> None:
         """
@@ -209,8 +232,7 @@ class RawVault:
         :param effectivity_satellite - If True (default), the effectivity satellite is loaded for the hub.
         """
 
-        stage_table_name = f'{self.config.staging_prepared_database_name}.{staging_table_name}'
-        staged_df = self.spark.table(stage_table_name)
+        staged_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{staging_table_name}')
         self.load_hub(staged_df, hub_table_name, business_key_column_names, satellites, effectivity_satellite)
 
     def load_hub_from_source_table(self, source_table_name: str, hub_table_name: str, business_key_column_names: List[str], satellites: List[SatelliteDefinition] = [], effectivity_satellite: bool = True) -> None:
@@ -242,7 +264,8 @@ class RawVault:
         hub_table_name = self.conventions.hub_name(hub_table_name)
 
 
-        hub_df = self.spark.table(f'{self.config.raw_database_name}.{hub_table_name}')
+        #hub_df = self.spark.table(f'{self.config.raw_schema_name}.{hub_table_name}')
+        hub_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{hub_table_name}')
         
         staged_df = staged_df \
             .withColumn(self.conventions.cdc_load_date_column_name(), staged_df[self.conventions.load_date_column_name()]) \
@@ -268,7 +291,7 @@ class RawVault:
             .distinct()
 
         bucket_columns = [self.conventions.hkey_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, hub_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, hub_table_name, bucket_columns=bucket_columns, mode="append")
 
     def load_link_for_linked_source_tables_from_prepared_staging_tables(
         self, 
@@ -288,7 +311,7 @@ class RawVault:
         :param to_hkey_column_name - The name of the column pointing to the target of the link in the link table.
         """
 
-        staged_from_df = self.spark.table(f'{self.config.staging_prepared_database_name}.{from_staging_table_name}')
+        staged_from_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{from_staging_table_name}')
         self.load_link(staged_from_df, from_staging_foreign_key, link_table_name, from_hkey_column_name, to_hkey_column_name)
 
     def load_link_for_linked_source_tables_from_source_tables(
@@ -337,14 +360,14 @@ class RawVault:
     #     link_table_name = self.conventions.link_name(link_table_name)
 
     #     hub_table_name = self.conventions.hub_name(from_foreign_key.to.table)
-    #     hub_table_name = f'{self.config.raw_database_name}.{hub_table_name}'
+    #     hub_table_name = f'{self.config.raw_schema_name}.{hub_table_name}'
     #     hub_table_name = self.conventions.remove_source_prefix(hub_table_name)
 
     #     sat_table_name = self.conventions.sat_name(from_foreign_key.to.table)
-    #     sat_table_name = f'{self.config.raw_database_name}.{sat_table_name}'
+    #     sat_table_name = f'{self.config.raw_schema_name}.{sat_table_name}'
     #     sat_table_name = self.conventions.remove_source_prefix(sat_table_name)
 
-    #     link_df = self.spark.table(f'{self.config.raw_database_name}.{link_table_name}')
+    #     link_df = self.spark.table(f'{self.config.raw_schema_name}.{link_table_name}')
 
     #     # CHANGE THIS HERE!
     #     # Tests fail because from_staging_foreign_key.to.column may not be in SAT but in HUB
@@ -399,7 +422,7 @@ class RawVault:
     #         .distinct()
 
     #     bucket_columns = [self.conventions.hkey_column_name()]
-    #     self.__write_table(joined_df, self.config.raw_database_name, link_table_name, bucket_columns=bucket_columns, mode="append")
+    #     self.__write_table(joined_df, self.config.raw_schema_name, link_table_name, bucket_columns=bucket_columns, mode="append")
 
     #     update_df = staged_from_df \
     #         .filter(staged_from_df[self.conventions.cdc_operation_column_name()] == self.conventions.CDC_OPS.UPDATE) \
@@ -507,10 +530,10 @@ class RawVault:
         """
 
         link_table_name = self.conventions.link_name(link_table_name)
-        link_df = self.spark.table(f'{self.config.raw_database_name}.{link_table_name}')
+        link_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{link_table_name}')
         
         sat_effectivity_table_name = self.conventions.sat_effectivity_name(link_table_name)
-        sat_effectivity_df = self.spark.table(f'{self.config.raw_database_name}.{sat_effectivity_table_name}')
+        sat_effectivity_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{sat_effectivity_table_name}')
 
         from_df = staged_from_df \
             .filter(
@@ -538,8 +561,8 @@ class RawVault:
         # some linked entities might not be present in staging tables, thus we need to find the right hash key
         # in the existing hubs.
         #
-        to_df_hub = self.spark.table(f'{self.config.raw_database_name}.{self.conventions.remove_source_prefix(self.conventions.hub_name(from_foreign_key.to.table.split("_")[0]))}')
-        to_df_sat = self.spark.table(f'{self.config.raw_database_name}.{self.conventions.remove_source_prefix(self.conventions.sat_name(from_foreign_key.to.table.split("_")[0]))}')
+        to_df_hub = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{self.conventions.remove_source_prefix(self.conventions.hub_name(from_foreign_key.to.table.split("_")[0]))}')
+        to_df_sat = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{self.conventions.remove_source_prefix(self.conventions.sat_name(from_foreign_key.to.table.split("_")[0]))}')
 
         to_df = to_df_hub \
             .join(to_df_sat, to_df_hub[self.conventions.hkey_column_name()] == to_df_sat[self.conventions.hkey_column_name()], how="left") \
@@ -579,7 +602,7 @@ class RawVault:
 
         # write new LNK-table entries to table
         bucket_columns = [self.conventions.hkey_column_name()]
-        self.__write_table(linked_df_new_lnk_entries, self.config.raw_database_name, link_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(linked_df_new_lnk_entries, self.config.raw_base_path, self.config.raw_schema_name, link_table_name, bucket_columns=bucket_columns, mode="append")
 
         # effectitivty satellite DataFrame with new entries
         sat_effectivity_new_df = linked_df \
@@ -640,7 +663,7 @@ class RawVault:
             .distinct()
 
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-        self.__write_table(eff_full_df, self.config.raw_database_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(eff_full_df, self.config.raw_base_path, self.config.raw_schema_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
     
     def load_link_from_prepared_stage_table(self, staging_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
         """
@@ -652,7 +675,7 @@ class RawVault:
         :param satellites - Definitions of the satellites for the link.
         """
 
-        staged_df = self.spark.table(f'{self.config.staging_prepared_database_name}.{staging_table_name}')
+        staged_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{staging_table_name}')
         self.load_multilink(staged_df, links, link_table_name, satellites)
 
     def load_link_from_source_table(self, source_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
@@ -681,11 +704,11 @@ class RawVault:
         sat_effectivity_table_name = self.conventions.sat_effectivity_name(self.conventions.remove_prefix(link_table_name))      
         link_table_name = self.conventions.link_name(link_table_name)
         
-        link_df = self.spark.table(f'{self.config.raw_database_name}.{link_table_name}')
+        link_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{link_table_name}')
         
         for link in links:
-            hub_table_name = f'{self.config.raw_database_name}.{self.conventions.remove_source_prefix(self.conventions.hub_name(link.name))}'
-            hub_df = self.spark.table(hub_table_name) \
+            hub_path = f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{self.conventions.remove_source_prefix(self.conventions.hub_name(link.name))}'
+            hub_df = self.spark.read.format("delta").load(hub_path) \
                 .withColumnRenamed(self.conventions.hkey_column_name(), link.hkey_column_name) \
                 .select([link.foreign_key.to.column, link.hkey_column_name])
 
@@ -716,7 +739,7 @@ class RawVault:
             .distinct()
 
         bucket_columns = [self.conventions.hkey_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, link_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, link_table_name, bucket_columns=bucket_columns, mode="append")
 
     def load_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
@@ -728,7 +751,7 @@ class RawVault:
         :param attributes - The list of attributes which are stored in the reference table.
         """
 
-        staged_df = self.spark.table(f'`{self.config.staging_prepared_database_name}`.`{staging_table_name}`')
+        staged_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{staging_table_name}')
         self.load_references(staged_df, reference_table_name, id_column, attributes)
 
 
@@ -745,7 +768,7 @@ class RawVault:
         staged_df = self.stage_table_df(f"{source_table_name}.parquet")
         self.load_references(staged_df, reference_table_name, id_column, attributes)
 
-    def load_references(self, staged_df: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
+    def load_references(self, staged_df: DataFrame, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
         Loads a reference table from a staging DataFrame. 
 
@@ -757,9 +780,7 @@ class RawVault:
         columns = [id_column, self.conventions.hdiff_column_name(), self.conventions.load_date_column_name()] + attributes
 
         reference_table_name = self.conventions.ref_name(reference_table_name)
-        ref_table_name = f'{self.config.raw_database_name}.{reference_table_name}'
-        
-        ref_df = self.spark.table(ref_table_name)
+        ref_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{reference_table_name}')
 
         join_condition = [ref_df[id_column] == staged_df[id_column], \
             ref_df[self.conventions.load_date_column_name()] == staged_df[self.conventions.load_date_column_name()]]
@@ -769,14 +790,14 @@ class RawVault:
             .select(columns)
 
         if self.config.optimize_partitioning:
-            staged_df = staged_df.repartition(self.config.partition_size, [id_column, self.conventions.load_date_column_name()])
+            staged_df = staged_df.repartition(self.config.partition_size, id_column, self.conventions.load_date_column_name())
 
         staged_df = staged_df \
             .join(ref_df, join_condition, how='left_anti') \
             .distinct()
 
         bucket_columns = [id_column, self.conventions.load_date_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
 
     def load_code_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
@@ -788,7 +809,7 @@ class RawVault:
         :param attributes - The list of attributes which are stored in the reference table.
         """
         
-        staged_df = self.spark.table(f'`{self.config.staging_prepared_database_name}`.`{staging_table_name}`')
+        staged_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{staging_table_name}')
         self.load_code_references(staged_df, staging_table_name, reference_table_name, id_column, attributes)
 
 
@@ -819,9 +840,7 @@ class RawVault:
         columns = [self.conventions.ref_group_column_name(), id_column, self.conventions.hdiff_column_name(), self.conventions.load_date_column_name()] + attributes
 
         reference_table_name = self.conventions.ref_name(reference_table_name)
-        ref_table_name = f'{self.config.raw_database_name}.{reference_table_name}'
-        
-        ref_df = self.spark.table(ref_table_name)
+        ref_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{reference_table_name}')
 
         join_condition = [ref_df[id_column] == staged_df[id_column], \
             ref_df[self.conventions.ref_group_column_name()] == staged_df[self.conventions.ref_group_column_name()], \
@@ -834,14 +853,14 @@ class RawVault:
 
         if self.config.optimize_partitioning:
             staged_df = staged_df.repartition(self.config.partition_size, 
-                [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()])
+                self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name())
             
         staged_df = staged_df \
             .join(ref_df, join_condition, how='left_anti') \
             .distinct()
 
         bucket_columns = [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
     
     def load_code_references_from_multiple_prepared_stage_tables(self, staging_table_names: List[str], reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
@@ -854,16 +873,15 @@ class RawVault:
         """
 
         reference_table_name = self.conventions.ref_name(reference_table_name)
-        ref_table_name = f'{self.config.raw_database_name}.{reference_table_name}'
         
-        ref_df = self.spark.table(ref_table_name) \
+        ref_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{reference_table_name}') \
             .repartition(len(staging_table_names), self.conventions.ref_group_column_name()) \
             .cache()
 
         new_ref_df = self.spark.createDataFrame([], ref_df.schema)
 
         for staging_table_name in staging_table_names:
-            staged_df = self.spark.table(f'`{self.config.staging_prepared_database_name}`.`{staging_table_name}`') \
+            staged_df = self.spark.read.format("delta").load(f'{self.config.staging_base_path}/{self.config.staging_schema_name}/{staging_table_name}') \
                 .withColumn(self.conventions.ref_group_column_name(), F.lit(staging_table_name.lower())) \
                 .withColumn(self.conventions.hdiff_column_name(), DataVaultFunctions.hash(attributes)) \
                 .select(new_ref_df.columns) \
@@ -875,12 +893,12 @@ class RawVault:
 
             if self.config.optimize_partitioning:
                 staged_df = staged_df.repartition(self.config.partition_size, 
-                    [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()])
+                    self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name())
             staged_df = staged_df.join(ref_df, join_condition, how='left_anti').distinct()
             new_ref_df = new_ref_df.union(staged_df)
 
         bucket_columns = [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()]
-        self.__write_table(new_ref_df, self.config.raw_database_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(new_ref_df, self.config.raw_base_path, self.config.raw_schema_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
 
     def load_code_references_from_multiple_source_tables(self, source_table_names: List[str], reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
@@ -893,9 +911,8 @@ class RawVault:
         """
 
         reference_table_name = self.conventions.ref_name(reference_table_name)
-        ref_table_name = f'{self.config.raw_database_name}.{reference_table_name}'
         
-        ref_df = self.spark.table(ref_table_name) \
+        ref_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{reference_table_name}') \
             .repartition(len(source_table_names), self.conventions.ref_group_column_name()) \
             .cache()
 
@@ -914,12 +931,12 @@ class RawVault:
 
             if self.config.optimize_partitioning:
                 staged_df = staged_df.repartition(self.config.partition_size, 
-                    [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()])
+                    self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name())
             staged_df = staged_df.join(ref_df, join_condition, how='left_anti').distinct()
             new_ref_df = new_ref_df.union(staged_df)
 
         bucket_columns = [self.conventions.ref_group_column_name(), id_column, self.conventions.load_date_column_name()]
-        self.__write_table(new_ref_df, self.config.raw_database_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(new_ref_df, self.config.raw_base_path, self.config.raw_schema_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
 
     def load_satellite_from_prepared_stage_dataframe(self, staged_df: DataFrame, satellite: SatelliteDefinition) -> None:
         """
@@ -930,10 +947,7 @@ class RawVault:
         :param staged_df - The dataframe which contains the staged and prepared data for the satellite.
         :param satellite - The satellite definition.
         """
-        sat_table_name = f'{self.config.raw_database_name}.{satellite.name}'
-        # Materialize existing data via localCheckpoint to sever lineage from the Hive table,
-        # which is required before overwriting the same table with the combined result.
-        sat_df = self.spark.table(sat_table_name).localCheckpoint(eager=True)
+        sat_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{satellite.name}').localCheckpoint(eager=True)
 
         allowed_cdc_operations = [
             self.conventions.CDC_OPS.CREATE, self.conventions.CDC_OPS.UPDATE, 
@@ -953,7 +967,7 @@ class RawVault:
             .select(columns)
 
         if self.config.optimize_partitioning:
-            staged_df = staged_df.repartition(self.config.partition_size, [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()])
+            staged_df = staged_df.repartition(self.config.partition_size, self.conventions.hkey_column_name(), self.conventions.load_date_column_name())
 
         join_condition = [sat_df[self.conventions.hkey_column_name()] == staged_df[self.conventions.hkey_column_name()], \
             sat_df[self.conventions.load_date_column_name()] == staged_df[self.conventions.load_date_column_name()]]
@@ -982,7 +996,7 @@ class RawVault:
         )
 
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-        self.__write_table(combined_df, self.config.raw_database_name, satellite.name, bucket_columns=bucket_columns, mode="overwrite")
+        self.__write_table(combined_df, self.config.raw_base_path, self.config.raw_schema_name, satellite.name, bucket_columns=bucket_columns, mode="overwrite")
 
     def load_effectivity_satellite_from_prepared_stage_dataframe(self, staged_df: DataFrame, sat_effectivity_table_name: str) -> None:
         """
@@ -992,7 +1006,7 @@ class RawVault:
         :param satellite - The satellite definition.
         """
 
-        sat_effectivity_df = self.spark.table(f'{self.config.raw_database_name}.{sat_effectivity_table_name}')
+        sat_effectivity_df = self.spark.read.format("delta").load(f'{self.config.raw_base_path}/{self.config.raw_schema_name}/{sat_effectivity_table_name}')
         
         allowed_cdc_operations = [
             self.conventions.CDC_OPS.CREATE, self.conventions.CDC_OPS.DELETE, 
@@ -1013,7 +1027,7 @@ class RawVault:
             .select(columns)
 
         if self.config.optimize_partitioning:
-            staged_df = staged_df.repartition(self.config.partition_size, [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()])
+            staged_df = staged_df.repartition(self.config.partition_size, self.conventions.hkey_column_name(), self.conventions.load_date_column_name())
         
         join_condition = [
             sat_effectivity_df[self.conventions.hkey_column_name()] == staged_df[self.conventions.hkey_column_name()], \
@@ -1025,14 +1039,14 @@ class RawVault:
             .distinct()
 
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
-        self.__write_table(staged_df, self.config.raw_database_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
+        self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
 
     def stage_table(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
         """
-        Stages a source table. Additional columns will be created/ calculated and stored in the staging database.
+        Stages a source table. Additional columns will be created/ calculated and stored in the staging schema.
 
         :param name - The name of the table in the prepared staging area.
-        :param source - The source file path, relative to staging_base_path (w/o leading slash).
+        :param source - The source file path, relative to landing_zone_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
         :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
         """
@@ -1045,7 +1059,7 @@ class RawVault:
         else:
             bucket_columns = []
 
-        self.__write_table(df, self.config.staging_prepared_database_name, name, bucket_columns=bucket_columns, mode="overwrite")
+        self.__write_table(df, self.config.staging_base_path, self.config.staging_schema_name, name, bucket_columns=bucket_columns, mode="overwrite")
 
     _SUPPORTED_FORMATS = {
         '.parquet': {'format': 'parquet', 'options': {}},
@@ -1054,10 +1068,10 @@ class RawVault:
 
     def stage_table_df(self, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> DataFrame:
         """
-        Stages a source table. Additional columns will be created/ calculated and stored in the staging database.
+        Stages a source table. Additional columns will be created/ calculated and stored in the staging schema.
         Supported source file formats: Parquet (.parquet), CSV (.csv).
 
-        :param source - The source file path, relative to staging_base_path (w/o leading slash).
+        :param source - The source file path, relative to landing_zone_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
         :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
         """
@@ -1068,7 +1082,7 @@ class RawVault:
             raise ValueError(f"Unsupported source file format '{ext}'. Supported formats: {list(self._SUPPORTED_FORMATS.keys())}")
 
         # load source data from file.
-        df = self.spark.read.options(**fmt['options']).load(f'{self.config.staging_base_path}/{source}', format=fmt['format'])
+        df = self.spark.read.options(**fmt['options']).load(f'{self.config.landing_zone_base_path}/{source}', format=fmt['format'])
 
         # add DataVault specific columns
         df = df \
@@ -1094,26 +1108,28 @@ class RawVault:
 
         return df
 
-    def __create_external_table(self, database: str, name: str, columns: List[ColumnDefinition], bucket_columns: List[str] = []) -> None:
+    def __create_table(self, base_path: str, schema: str, name: str, columns: List[ColumnDefinition], bucket_columns: List[str] = []) -> None:
         """
-        :param database - The name of the database where the table should be created.
+        :param base_path - The ABFS base path under which the table data is stored.
+        :param schema - The schema name for catalog registration.
         :param name - The name of the table which should be created.
         :param columns - Column definitions for the tables.
         """
 
-        schema = StructType([ StructField(c.name, c.type, c.nullable) for c in columns ])
-        df: DataFrame = self.spark.createDataFrame([], schema)
+        table_schema = StructType([ StructField(c.name, c.type, c.nullable) for c in columns ])
+        df: DataFrame = self.spark.createDataFrame([], table_schema)
 
-        self.__write_table(df, database, name, bucket_columns=bucket_columns, mode="ignore")
+        self.__write_table(df, base_path, schema, name, bucket_columns=bucket_columns, mode="ignore")
 
-    def __write_table(self, df: DataFrame, database: str, name: str, bucket_columns: List[str] = [], mode: str = "append"):
+    def __write_table(self, df: DataFrame, base_path: str, schema: str, name: str, bucket_columns: List[str] = [], mode: str = "append"):
         """
-        Writes a DataFrame to an external table in the database.
+        Writes a DataFrame using an explicit ABFS path and catalog registration.
 
-        :param df - The DataFrame to be written to the database.
-        :param database - The name of the database where the table should be created.
-        :param name - The name of the table which should be created.
-        :param bucket_columns - The names of the columns which should be used for bucketing.
+        :param df - The DataFrame to be written.
+        :param base_path - The ABFS base path under which the table data is stored.
+        :param schema - The schema name for catalog registration.
+        :param name - The table name.
+        :param bucket_columns - Column names used for bucketing.
         :param mode - The write mode.
         """
 
@@ -1122,6 +1138,11 @@ class RawVault:
                 .write \
                 .bucketBy(self.config.partition_size, bucket_columns) \
                 .mode(mode) \
-                .saveAsTable(f'{database}.{name}')
+                .option("path", f'{base_path}/{schema}/{name}') \
+                .saveAsTable(self._qualified_table(schema, name))
         else:
-            df.write.mode(mode).saveAsTable(f'{database}.{name}')
+            path = f'{base_path}/{schema}/{name}'
+            df.write.format("delta").mode(mode).save(path)
+            self.spark.sql(f"CREATE TABLE IF NOT EXISTS {self._qualified_table(schema, name)} USING DELTA LOCATION '{path}'")
+        
+

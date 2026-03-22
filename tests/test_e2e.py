@@ -39,7 +39,7 @@ ASSERT_STG_DIR = Path(__file__).parent / "data" / "assert" / "stg"
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _write_raw_parquet(spark, staging_base_path: str, filename: str, csv_path: Path) -> None:
+def _write_raw_parquet(spark, landing_zone_base_path: str, filename: str, csv_path: Path) -> None:
     """Write a raw source CSV as Parquet into the staging area for stage_table ingestion.
 
     The CSV must have columns matching the RawVaultConfiguration staging column names
@@ -51,7 +51,7 @@ def _write_raw_parquet(spark, staging_base_path: str, filename: str, csv_path: P
         spark.read.csv(str(csv_path), header=True, inferSchema=True)
         .withColumn("load_datetime", F.to_timestamp("load_datetime", "yyyy-MM-dd'T'HH:mm:ss'Z'"))
         .withColumn("load_operation", F.col("load_operation").cast("int"))
-        .write.mode("overwrite").parquet(f"{staging_base_path}/{filename}")
+        .write.mode("overwrite").parquet(f"{landing_zone_base_path}/{filename}")
     )
 
 
@@ -83,9 +83,11 @@ def e2e_config(tmp_path_factory):
     base = str(tmp_path_factory.mktemp("e2e"))
     return RawVaultConfiguration(
         source_system_name="E2E",
-        staging_base_path=f"{base}/staging",
-        staging_prepared_base_path=f"{base}/staging_prepared",
-        raw_base_path=f"{base}/raw",
+        landing_zone_base_path=f"{base}/staging",
+        staging_base_path=f"{base}/staging_prepared",
+        staging_schema_name="e2e_staging_prepared",
+        raw_base_path=f"{base}/raw",        
+        raw_schema_name="e2e_raw",
         staging_load_date_column_name="load_datetime",
         staging_cdc_operation_column_name="load_operation",
         snapshot_override_load_date_based_on_column="snapshot_date",
@@ -155,14 +157,14 @@ def test_e2e_create_schema(vault):
 
 def test_e2e_stage_tables(spark, vault, e2e_config, conventions):
     """Write raw Parquet files then run stage_table to produce the prepared staging layer."""
-    base = e2e_config.staging_base_path
+    base = e2e_config.landing_zone_base_path
     _write_raw_parquet(spark, base, "customer.parquet", DATA_DIR / "customer_raw.csv")
     _write_raw_parquet(spark, base, "order.parquet", DATA_DIR / "order_raw.csv")
 
     vault.stage_table("customer", "customer.parquet", hkey_columns=["customer_id"])
     vault.stage_table("order", "order.parquet", hkey_columns=["order_id"])
 
-    staging_db = e2e_config.staging_prepared_database_name
+    staging_db = e2e_config.staging_schema_name
     customer_staging = spark.table(f"{staging_db}.customer")
     assert customer_staging.count() == 4
     assert {r[conventions.record_source_column_name()] for r in customer_staging.collect()} == {"E2E"}
@@ -188,7 +190,7 @@ def test_e2e_load_customer_hub(spark, vault, e2e_config, conventions):
         )
     ])
 
-    hub_table = f"{e2e_config.raw_database_name}.{conventions.hub_name('customer')}"
+    hub_table = f"{e2e_config.raw_schema_name}.{conventions.hub_name('customer')}"
     ids = {r["customer_id"] for r in spark.table(hub_table).collect()}
     assert ids == {"C001", "C002", "C003"}
 
@@ -201,7 +203,7 @@ def test_e2e_load_order_hub(spark, vault, e2e_config, conventions):
         )
     ])
 
-    hub_table = f"{e2e_config.raw_database_name}.{conventions.hub_name('order')}"
+    hub_table = f"{e2e_config.raw_schema_name}.{conventions.hub_name('order')}"
     ids = {r["order_id"] for r in spark.table(hub_table).collect()}
     assert ids == {"O001", "O002", "O003"}
 
@@ -210,7 +212,7 @@ def test_e2e_hub_deduplication(spark, vault, e2e_config, conventions):
     """Reloading from the same staging table must not produce duplicate hub entries."""
     vault.load_hub_from_prepared_staging_table("customer", "customer", ["customer_id"])
 
-    hub_table = f"{e2e_config.raw_database_name}.{conventions.hub_name('customer')}"
+    hub_table = f"{e2e_config.raw_schema_name}.{conventions.hub_name('customer')}"
     assert spark.table(hub_table).count() == 3
 
 
@@ -220,7 +222,7 @@ def test_e2e_hub_deduplication(spark, vault, e2e_config, conventions):
 
 def test_e2e_export_output(spark, vault, e2e_config, conventions):
     """Export all raw vault tables to tests/output/ as CSV for manual inspection."""
-    db = e2e_config.raw_database_name
+    db = e2e_config.raw_schema_name
 
     tables = {
         "hub_customer": conventions.hub_name("customer"),
@@ -235,7 +237,7 @@ def test_e2e_export_output(spark, vault, e2e_config, conventions):
     for label, table in tables.items():
         _export_table(spark, db, table, label)
 
-    stg_db = e2e_config.staging_prepared_database_name
+    stg_db = e2e_config.staging_schema_name
     _export_table(spark, stg_db, "customer", "stg_customer")
     _export_table(spark, stg_db, "order", "stg_order")
 
@@ -280,7 +282,7 @@ def _assert(spark, db: str, table: str, assert_csv: Path,
 
 def test_e2e_compare_with_asserts(spark, vault, e2e_config, conventions):
     """Compare vault tables against assert CSVs, excluding runtime-generated columns."""
-    db = e2e_config.raw_database_name
+    db = e2e_config.raw_schema_name
     load_date = conventions.load_date_column_name()
     load_end_date = conventions.load_end_date_column_name()
 
