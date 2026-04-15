@@ -1,0 +1,4 @@
+customer_id,name,email,country_code
+C001,Alice Müller,alice@newdomain.com,DE
+C003,Carlos Ruiz,carlos@example.es,ES
+C004,Diana Park,diana@example.com,KR

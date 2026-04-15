@@ -1,5 +1,5 @@
-dv__hkey,dv__cdc_operation,dv__source_system,customer_id,name,email,country
-928c6512b3a8a0dc74a93ee63e77842a,2,E2E,C001,Alice Müller,alice@example.com,DE
-dd21c430c85fb4208fa08ed975561e3c,2,E2E,C002,Bob Smith,bob@example.com,US
-5027ad6785b2ae53c4cbf2bdfd5ecf89,2,E2E,C003,Carlos Ruiz,carlos@example.com,ES
-928c6512b3a8a0dc74a93ee63e77842a,4,E2E,C001,Alice Müller,alice@newdomain.com,DE
+dv__hkey,dv__cdc_operation,dv__source_system,customer_id,name,email,country_code,name_upper
+a4906a54b9b8416b9a8136e3665eb9d5c1cab6e72830f662d9b80a0d68b46b07,2,E2E,C001,Alice Müller,alice@example.com,DE,ALICE MÜLLER
+fdc98571fc93e8482954dcc8034bda27f571bd691cd86510a849dce99759933d,2,E2E,C002,Bob Smith,bob@example.com,US,BOB SMITH
+64604487c74ef2fb0aca58ed3e951aacc1f537baf96c023b75441012e4b92880,2,E2E,C003,Carlos Ruiz,carlos@example.com,ES,CARLOS RUIZ
+a4906a54b9b8416b9a8136e3665eb9d5c1cab6e72830f662d9b80a0d68b46b07,4,E2E,C001,Alice Müller,alice@newdomain.com,DE,ALICE MÜLLER

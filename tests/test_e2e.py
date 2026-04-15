@@ -22,6 +22,7 @@ After running `make test` (or `pytest tests/test_e2e.py`), inspect the results:
 import shutil
 from pathlib import Path
 
+from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
 import pytest
 from pyspark.sql.types import DoubleType, StringType
@@ -137,8 +138,9 @@ def test_e2e_create_schema(vault):
     ], force_recreate=True)
     vault.create_satellite("customer", [
         ColumnDefinition("name", StringType()),
+        ColumnDefinition("name_upper", StringType()),        
         ColumnDefinition("email", StringType()),
-        ColumnDefinition("country", StringType()),
+        ColumnDefinition("country_code", StringType()),
     ], force_recreate=True)
     vault.create_hub("order", [
         ColumnDefinition("order_id", StringType()),
@@ -161,7 +163,12 @@ def test_e2e_stage_tables(spark, vault, e2e_config, conventions):
     _write_raw_parquet(spark, base, "customer.parquet", DATA_DIR / "customer_raw.csv")
     _write_raw_parquet(spark, base, "order.parquet", DATA_DIR / "order_raw.csv")
 
-    vault.stage_table("customer", "customer.parquet", hkey_columns=["customer_id"])
+    def transform_customer(df: DataFrame) -> DataFrame:
+        return df.withColumn("name_upper", F.upper(df["name"])) \
+                    .withColumnRenamed("country", "country_code")
+
+
+    vault.stage_table("customer", "customer.parquet", hkey_columns=["customer_id"], field_transformer=transform_customer)
     vault.stage_table("order", "order.parquet", hkey_columns=["order_id"])
 
     staging_db = e2e_config.staging_schema_name
@@ -186,7 +193,7 @@ def test_e2e_load_customer_hub(spark, vault, e2e_config, conventions):
     vault.load_hub_from_prepared_staging_table("customer", "customer", ["customer_id"], satellites=[
         SatelliteDefinition(
             name=conventions.sat_name("customer"),
-            attributes=["name", "email", "country"],
+            attributes=["name", "name_upper", "email", "country_code"],
         )
     ])
 

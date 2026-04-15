@@ -2,7 +2,7 @@ import os
 
 import pyspark.sql.functions as F
 
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 from pyspark.sql import DataFrame
 from pyspark.sql.types import *
@@ -411,7 +411,8 @@ class RawVault:
 
     #     joined_df = staged_from_df \
     #         .join(hub_df, join_condition) \
-    #         .withColumn(self.conventions.hkey_column_name(), DataVaultFunctions.hash([from_hkey_column_name, to_hkey_column_name])) \
+    #         .withColumn(self.conventions.hkey_column_name(), 
+    # DataVaultFunctions.hash([from_hkey_column_name, to_hkey_column_name])) \
     #         .withColumn(self.conventions.load_date_column_name(), current_timestamp) \
     #         .withColumn(self.conventions.record_source_column_name(), F.lit(self.config.source_system_name)) \
     #         .select(columns)
@@ -978,8 +979,12 @@ class RawVault:
 
         # Drop stale load_end_date from existing records so it can be recomputed for the full table.
         # DataFrame.drop() silently ignores columns that don't exist (first-time load scenario).
+        new_records_df = new_records_df.drop(self.conventions.load_end_date_column_name())
         sat_base_df = sat_df.drop(self.conventions.load_end_date_column_name())
         combined_df = sat_base_df.union(new_records_df)
+        # combined_df = sat_df\
+        #     .union(new_records_df)\
+        #     .drop(self.conventions.load_end_date_column_name())
 
         # Recompute load_end_date for every record: LEAD(load_date) within each hkey partition,
         # ordered by load_date. The latest record per hkey (still active) receives the sentinel
@@ -1041,7 +1046,7 @@ class RawVault:
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
         self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
 
-    def stage_table(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
+    def stage_table(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None, field_transformer: Optional[Callable[[DataFrame], DataFrame]] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging schema.
 
@@ -1049,9 +1054,12 @@ class RawVault:
         :param source - The source file path, relative to landing_zone_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
         :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
+        :param field_transformer - Optional callable that receives the staged DataFrame and returns a transformed
+            DataFrame. Use this to add extra calculated columns, rename columns, or translate CDC operation codes
+            without modifying RawVault itself. Example: lambda df: df.withColumn('status', translate_cdc(df['operation']))
         """
 
-        df = self.stage_table_df(source, hkey_columns, default_cdc_operation)
+        df = self.stage_table_df(source, hkey_columns, default_cdc_operation, field_transformer)
 
         # write staged table into staging area.
         if self.conventions.hkey_column_name() in df.columns:
@@ -1066,7 +1074,7 @@ class RawVault:
         '.csv':     {'format': 'csv',     'options': {'header': 'true', 'inferSchema': 'true'}},
     }
 
-    def stage_table_df(self, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None) -> DataFrame:
+    def stage_table_df(self, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None, field_transformer: Optional[Callable[[DataFrame], DataFrame]] = None) -> DataFrame:
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging schema.
         Supported source file formats: Parquet (.parquet), CSV (.csv).
@@ -1074,6 +1082,9 @@ class RawVault:
         :param source - The source file path, relative to landing_zone_base_path (w/o leading slash).
         :param hkey_columns - Optional. Column names which should be used to calculate a hash key.
         :param default_cdc_operation - Optional. If the source has no CDC operation column, add one with this value.
+        :param field_transformer - Optional callable that receives the staged DataFrame and returns a transformed
+            DataFrame. Use this to add extra calculated columns, rename columns, or translate CDC operation codes
+            without modifying RawVault itself. Example: lambda df: df.withColumn('status', translate_cdc(df['operation']))
         """
 
         ext = os.path.splitext(source)[1].lower()
@@ -1105,8 +1116,9 @@ class RawVault:
 
         if len(hkey_columns) > 0:
             df = df.withColumn(self.conventions.hkey_column_name(), DataVaultFunctions.hash(hkey_columns))
-            
-        # TODO: Create facility for adding extra calculated fields or rename the existing ones (e.g. for CDC operation code translation or similar) without the need to modify the code of RawVault itself.
+
+        if field_transformer is not None:
+            df = field_transformer(df)
 
         return df
 

@@ -1,0 +1,4 @@
+customer_id,name,email,country_code
+C001,Alice Müller,alice@example.com,DE
+C002,Bob Smith,bob@example.com,US
+C003,Carlos Ruiz,carlos@example.com,ES
