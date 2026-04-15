@@ -3,7 +3,7 @@ End-to-end integration test for the RawVault pipeline.
 
 Runs the full pipeline from raw source files:
   1. Write raw CSV extracts as Parquet to the staging area
-  2. stage_table() — prepare staging (compute HKEYs, add record source)
+  2. stage_from_file() — prepare staging (compute HKEYs, add record source)
   3. load_hub_from_prepared_staging_table() — populate hubs + satellites
   4. Assert staging and vault table contents
   5. Export all raw vault tables as CSV to tests/output/
@@ -168,8 +168,8 @@ def test_e2e_stage_tables(spark, vault, e2e_config, conventions):
                     .withColumnRenamed("country", "country_code")
 
 
-    vault.stage_table("customer", "customer.parquet", hkey_columns=["customer_id"], field_transformer=transform_customer)
-    vault.stage_table("order", "order.parquet", hkey_columns=["order_id"])
+    vault.stage_from_file("customer", "customer.parquet", hkey_columns=["customer_id"], field_transformer=transform_customer)
+    vault.stage_from_file("order", "order.parquet", hkey_columns=["order_id"])
 
     staging_db = e2e_config.staging_schema_name
     customer_staging = spark.table(f"{staging_db}.customer")

@@ -300,7 +300,7 @@ def stage_tables(spark: SparkSession, raw_vault: RawVault, staging_base_path: st
     """
     Stages all source tables from the given path.
 
-    :param raw_vault - The RawVault object needed for calling the stage_table(...) function.
+    :param raw_vault - The RawVault object needed for calling the stage_from_file(...) function.
     :param staging_base_path - The path of the source tables.
     """
 
@@ -311,17 +311,17 @@ def stage_tables(spark: SparkSession, raw_vault: RawVault, staging_base_path: st
         i = int(f.replace(".parquet", "").split("_")[-1])
         if i > number_of_batches : number_of_batches = i
         if SOURCE_TABLE_NAME_MOVIES in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_MOVIES}_{i}", f, HKEY_COLUMNS_MOVIES)
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_MOVIES}_{i}", f, HKEY_COLUMNS_MOVIES)
         elif SOURCE_TABLE_NAME_ACTORS in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_ACTORS}_{i}", f, HKEY_COLUMNS_ACTORS)
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_ACTORS}_{i}", f, HKEY_COLUMNS_ACTORS)
         elif SOURCE_TABLE_NAME_DIRECTORS in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_DIRECTORS}_{i}", f, HKEY_COLUMNS_DIRECTORS)
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_DIRECTORS}_{i}", f, HKEY_COLUMNS_DIRECTORS)
         elif SOURCE_TABLE_NAME_CASTINGS in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_CASTINGS}_{i}", f, HKEY_COLUMNS_CASTINGS)
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_CASTINGS}_{i}", f, HKEY_COLUMNS_CASTINGS)
         elif SOURCE_TABLE_NAME_TYPELISTS_1 in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{i}", f, [])
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{i}", f, [])
         elif SOURCE_TABLE_NAME_TYPELISTS_2 in f:
-            raw_vault.stage_table(f"{STAGING_TABLE_NAME_TYPELISTS_2}_{i}", f, [])
+            raw_vault.stage_from_file(f"{STAGING_TABLE_NAME_TYPELISTS_2}_{i}", f, [])
 
     for j in range(int(number_of_batches + 1)):
         movies_df = spark.table(f"{raw_vault.config.staging_prepared_database_name}.{STAGING_TABLE_NAME_MOVIES}_{j}")
@@ -410,7 +410,7 @@ def load_from_prepared_staging_table(raw_vault: RawVault, batch: int) -> None:
         [SatelliteDefinition(DV_CONV.sat_name(SOURCE_TABLE_NAME_DIRECTORS), ['NAME', 'COUNTRY'])])
 
     # load links
-    raw_vault.load_link_from_prepared_stage_table(
+    raw_vault.load_link_from_prepared_stage_from_file(
         f"{STAGING_TABLE_NAME_CASTINGS}_{batch}", 
         [
             LinkedHubDefinition(SOURCE_TABLE_NAME_MOVIES, "MOVIES_HKEY", ForeignKey("MOVIE_ID", ColumnReference(f"{STAGING_TABLE_NAME_MOVIES}_{batch}", "PublicID"))),
@@ -440,11 +440,11 @@ def create_reference_tables(raw_vault: RawVault, batch: int) -> None:
     raw_vault.create_code_reference_table(TYPELISTS_CODE_TABLE_NAME, ColumnDefinition("ID", StringType()), [ColumnDefinition("DESCRIPTION", StringType())])
 
     # load reference table
-    raw_vault.load_references_from_prepared_stage_table(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{batch}", TYPELISTS_TABLE_NAME, "ID", ["DESCRIPTION"])
+    raw_vault.load_references_from_prepared_stage_from_file(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{batch}", TYPELISTS_TABLE_NAME, "ID", ["DESCRIPTION"])
 
     # alternative
-    # raw_vault.load_code_references_from_prepared_stage_table(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{batch}", TYPELISTS_CODE_TABLE_NAME, "ID", ["DESCRIPTION"])
-    # raw_vault.load_code_references_from_prepared_stage_table(f"{STAGING_TABLE_NAME_TYPELISTS_2}_{batch}", TYPELISTS_CODE_TABLE_NAME, "ID", ["DESCRIPTION"])
+    # raw_vault.load_code_references_from_prepared_stage_from_file(f"{STAGING_TABLE_NAME_TYPELISTS_1}_{batch}", TYPELISTS_CODE_TABLE_NAME, "ID", ["DESCRIPTION"])
+    # raw_vault.load_code_references_from_prepared_stage_from_file(f"{STAGING_TABLE_NAME_TYPELISTS_2}_{batch}", TYPELISTS_CODE_TABLE_NAME, "ID", ["DESCRIPTION"])
 
     # load code reference table
     raw_vault.load_code_references_from_multiple_prepared_stage_tables(

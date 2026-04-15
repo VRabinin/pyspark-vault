@@ -47,8 +47,8 @@ raw_vault.create_satellite('SAT__CLAIM', [
 #
 # Stage tables.
 #
-raw_vault.stage_table('cc_claim', 'cc_claim.parquet', ['ClaimNumber'])
-raw_vault.stage_table('cc_policy', 'cc_policy.parquet', ['PublicId'])
+raw_vault.stage_from_file('cc_claim', 'cc_claim.parquet', ['ClaimNumber'])
+raw_vault.stage_from_file('cc_policy', 'cc_policy.parquet', ['PublicId'])
 
 #
 # Load Hubs

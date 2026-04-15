@@ -667,7 +667,7 @@ class RawVault:
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
         self.__write_table(eff_full_df, self.config.raw_base_path, self.config.raw_schema_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
     
-    def load_link_from_prepared_stage_table(self, staging_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
+    def load_link_from_prepared_stage_from_file(self, staging_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
         """
         Loads a link with data from a staging table which is a already a link table in the source.
 
@@ -743,7 +743,7 @@ class RawVault:
         bucket_columns = [self.conventions.hkey_column_name()]
         self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, link_table_name, bucket_columns=bucket_columns, mode="append")
 
-    def load_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
+    def load_references_from_prepared_stage_from_file(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
         Loads a reference table from a staging table. 
 
@@ -801,7 +801,7 @@ class RawVault:
         bucket_columns = [id_column, self.conventions.load_date_column_name()]
         self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, reference_table_name, bucket_columns=bucket_columns, mode="append")
 
-    def load_code_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
+    def load_code_references_from_prepared_stage_from_file(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
         Loads a reference table from a staging table. 
 
@@ -1050,7 +1050,7 @@ class RawVault:
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]
         self.__write_table(staged_df, self.config.raw_base_path, self.config.raw_schema_name, sat_effectivity_table_name, bucket_columns=bucket_columns, mode="append")
 
-    def stage_table(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None, field_transformer: Optional[Callable[[DataFrame], DataFrame]] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
+    def stage_from_file(self, name: str, source: str, hkey_columns: List[str] = [], default_cdc_operation: Optional[int] = None, field_transformer: Optional[Callable[[DataFrame], DataFrame]] = None) -> None: # TODO mw: Multiple HKeys, HDiffs?
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging schema.
 

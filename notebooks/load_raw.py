@@ -547,7 +547,7 @@ class RawVault:
             .write.mode('append').saveAsTable(link_table_name)
 
     
-    def load_link_from_prepared_stage_table(self, staging_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
+    def load_link_from_prepared_stage_from_file(self, staging_table_name: str, links: List[LinkedHubDefinition], link_table_name: str, satellites: List[SatelliteDefinition]) -> None:
         """
         Loads a link with data from a staging table which is a already a link table in the source.
 
@@ -589,7 +589,7 @@ class RawVault:
             .write.mode('append').saveAsTable(link_table_name)
         
 
-    def load_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
+    def load_references_from_prepared_stage_from_file(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
         Loads a reference table from a staging table. 
 
@@ -618,7 +618,7 @@ class RawVault:
             .write.mode('append').saveAsTable(ref_table_name)
 
 
-    def load_code_references_from_prepared_stage_table(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
+    def load_code_references_from_prepared_stage_from_file(self, staging_table_name: str, reference_table_name: str, id_column: str, attributes: List[str]) -> None:
         """
         Loads a reference table from a staging table. 
 
@@ -674,7 +674,7 @@ class RawVault:
             .write.mode('append').saveAsTable(sat_table_name)
 
 
-    def stage_table(self, name: str, source: str, hkey_columns: List[str] = []) -> None: # TODO mw: Multiple HKeys, HDiffs?
+    def stage_from_file(self, name: str, source: str, hkey_columns: List[str] = []) -> None: # TODO mw: Multiple HKeys, HDiffs?
         """
         Stages a source table. Additional columns will be created/ calculated and stored in the staging database. 
 
@@ -1177,56 +1177,56 @@ raw_vault.create_satellite('SAT__FURTHEREMPLOYERS', [
 #
 # Stage tables.
 #
-raw_vault.stage_table('cc_claim', 'cc_claim.parquet', ['PublicID'])
-raw_vault.stage_table('cc_exposure', 'cc_exposure.parquet', ['PublicID'])
-raw_vault.stage_table('cc_policy', 'cc_policy.parquet', ['PublicID'])
-raw_vault.stage_table('cc_incident', 'cc_incident.parquet', ['PublicID'])
-raw_vault.stage_table('cc_coverage', 'cc_coverage.parquet', ['PublicID'])
-raw_vault.stage_table('cc_riskunit', 'cc_riskunit.parquet', ['PublicID'])
-raw_vault.stage_table('cc_user', 'cc_user.parquet', ['PublicID'])
-raw_vault.stage_table('cc_credential', 'cc_credential.parquet', ['PublicID'])
-raw_vault.stage_table('cc_account', 'cc_account.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_claim', 'cc_claim.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_exposure', 'cc_exposure.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_policy', 'cc_policy.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_incident', 'cc_incident.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_coverage', 'cc_coverage.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_riskunit', 'cc_riskunit.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_user', 'cc_user.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_credential', 'cc_credential.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_account', 'cc_account.parquet', ['PublicID'])
 
-raw_vault.stage_table('ccx_alg_accountassignment', 'ccx_alg_accountassignment.parquet', ['PublicID'])
-raw_vault.stage_table('cc_specialhandling', 'cc_specialhandling.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_strategy', 'ccx_alg_strategy.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_accountmanagement', 'ccx_alg_accountmanagement.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_accountpolicy', 'ccx_alg_accountpolicy.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_otherreferences', 'ccx_alg_otherreferences.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_liabilityconcept', 'ccx_alg_liabilityconcept.parquet', ['PublicID'])
-raw_vault.stage_table('cc_deductible', 'cc_deductible.parquet', ['PublicID'])
-raw_vault.stage_table('cc_coverageterms', 'cc_coverageterms.parquet', ['PublicID'])
-raw_vault.stage_table('cc_endorsement', 'cc_endorsement.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_term', 'ccx_alg_term.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_accountassignment', 'ccx_alg_accountassignment.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_specialhandling', 'cc_specialhandling.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_strategy', 'ccx_alg_strategy.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_accountmanagement', 'ccx_alg_accountmanagement.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_accountpolicy', 'ccx_alg_accountpolicy.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_otherreferences', 'ccx_alg_otherreferences.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_liabilityconcept', 'ccx_alg_liabilityconcept.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_deductible', 'cc_deductible.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_coverageterms', 'cc_coverageterms.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_endorsement', 'cc_endorsement.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_term', 'ccx_alg_term.parquet', ['PublicID'])
 
-raw_vault.stage_table('ccx_alg_vehiclesalvage', 'ccx_alg_vehiclesalvage.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_tripitem', 'ccx_alg_tripitem.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_mobilepropertyitem', 'ccx_alg_mobilepropertyitem.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_mobpropcostdetails', 'ccx_alg_mobpropcostdetails.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_settlement', 'ccx_alg_settlement.parquet', ['PublicID'])
-raw_vault.stage_table('cc_injurydiagnosis', 'cc_injurydiagnosis.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_workresumptiondetails', 'ccx_alg_workresumptiondetails.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_salarydata', 'ccx_alg_salarydata.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_RELUlookup', 'ccx_alg_RELUlookup.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_RELUcode', 'ccx_alg_RELUcode.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_bodilyInjuryPoint_pel', 'ccx_alg_bodilyInjuryPoint_pel.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_treatment', 'ccx_alg_treatment.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_purefincosttype', 'ccx_alg_purefincosttype.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_financiallossitem', 'ccx_alg_financiallossitem.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_biincidentlossitem', 'ccx_alg_biincidentlossitem.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_incidentcession', 'ccx_alg_incidentcession.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_lossadjusterorder', 'ccx_alg_lossadjusterorder.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_otherinsurer', 'ccx_alg_otherinsurer.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_vehiclesalvage', 'ccx_alg_vehiclesalvage.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_tripitem', 'ccx_alg_tripitem.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_mobilepropertyitem', 'ccx_alg_mobilepropertyitem.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_mobpropcostdetails', 'ccx_alg_mobpropcostdetails.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_settlement', 'ccx_alg_settlement.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_injurydiagnosis', 'cc_injurydiagnosis.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_workresumptiondetails', 'ccx_alg_workresumptiondetails.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_salarydata', 'ccx_alg_salarydata.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_RELUlookup', 'ccx_alg_RELUlookup.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_RELUcode', 'ccx_alg_RELUcode.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_bodilyInjuryPoint_pel', 'ccx_alg_bodilyInjuryPoint_pel.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_treatment', 'ccx_alg_treatment.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_purefincosttype', 'ccx_alg_purefincosttype.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_financiallossitem', 'ccx_alg_financiallossitem.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_biincidentlossitem', 'ccx_alg_biincidentlossitem.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_incidentcession', 'ccx_alg_incidentcession.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_lossadjusterorder', 'ccx_alg_lossadjusterorder.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_otherinsurer', 'ccx_alg_otherinsurer.parquet', ['PublicID'])
 
-raw_vault.stage_table('cc_vehicle', 'cc_vehicle.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_handlingfees', 'ccx_alg_handlingfees.parquet', ['PublicID'])
-raw_vault.stage_table('cc_catastrophe', 'cc_catastrophe.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_causerdetail', 'ccx_alg_causerdetail.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_lctfleetquestionaire', 'ccx_alg_lctfleetquestionaire.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_productcodes', 'ccx_Alg_productcodes.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_namedperson', 'ccx_alg_namedperson.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_employementdata', 'ccx_alg_employementdata.parquet', ['PublicID'])
-raw_vault.stage_table('ccx_alg_furtheremployers', 'ccx_alg_furtheremployers.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_vehicle', 'cc_vehicle.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_handlingfees', 'ccx_alg_handlingfees.parquet', ['PublicID'])
+raw_vault.stage_from_file('cc_catastrophe', 'cc_catastrophe.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_causerdetail', 'ccx_alg_causerdetail.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_lctfleetquestionaire', 'ccx_alg_lctfleetquestionaire.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_productcodes', 'ccx_Alg_productcodes.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_namedperson', 'ccx_alg_namedperson.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_employementdata', 'ccx_alg_employementdata.parquet', ['PublicID'])
+raw_vault.stage_from_file('ccx_alg_furtheremployers', 'ccx_alg_furtheremployers.parquet', ['PublicID'])
 
 #
 #
@@ -1862,199 +1862,199 @@ raw_vault.create_code_reference_table('REF__TYPELIST', ColumnDefinition('ID', In
 #
 #
 
-raw_vault.stage_table('cctl_alg_acutespecificinjuries', 'cctl_alg_acutespecificinjuries.parquet', [])
-raw_vault.stage_table('cctl_alg_ageofitems', 'cctl_alg_ageofitems.parquet', [])
-raw_vault.stage_table('cctl_alg_alarmsystem', 'cctl_alg_alarmsystem.parquet', [])
-raw_vault.stage_table('cctl_alg_animalspecies', 'cctl_alg_animalspecies.parquet', [])
-raw_vault.stage_table('cctl_alg_biincidentlossitem', 'cctl_alg_biincidentlossitem.parquet', [])
-raw_vault.stage_table('cctl_alg_bipoints_pel', 'cctl_alg_bipoints_pel.parquet', [])
-raw_vault.stage_table('cctl_alg_bitypeofsalary', 'cctl_alg_bitypeofsalary.parquet', [])
-raw_vault.stage_table('cctl_alg_biunit', 'cctl_alg_biunit.parquet', [])
-raw_vault.stage_table('cctl_alg_brokertype', 'cctl_alg_brokertype.parquet', [])
-raw_vault.stage_table('cctl_alg_buildingtype', 'cctl_alg_buildingtype.parquet', [])
-raw_vault.stage_table('cctl_alg_buildinguse', 'cctl_alg_buildinguse.parquet', [])
-raw_vault.stage_table('cctl_alg_cancellationreason', 'cctl_alg_cancellationreason.parquet', [])
-raw_vault.stage_table('cctl_alg_categorydamagedobject', 'cctl_alg_categorydamagedobject.parquet', [])
-raw_vault.stage_table('cctl_alg_causer', 'cctl_alg_causer.parquet', [])
-raw_vault.stage_table('cctl_alg_causingvehicletype', 'cctl_alg_causingvehicletype.parquet', [])
-raw_vault.stage_table('cctl_alg_claimflow', 'cctl_alg_claimflow.parquet', [])
-raw_vault.stage_table('cctl_alg_claimsgroupsegment', 'cctl_alg_claimsgroupsegment.parquet', [])
-raw_vault.stage_table('cctl_alg_claimsubstate', 'cctl_alg_claimsubstate.parquet', [])
-raw_vault.stage_table('cctl_alg_cnpmode', 'cctl_alg_cnpmode.parquet', [])
-raw_vault.stage_table('cctl_alg_constructionmethod', 'cctl_alg_constructionmethod.parquet', [])
-raw_vault.stage_table('cctl_alg_conveyancecode', 'cctl_alg_conveyancecode.parquet', [])
-raw_vault.stage_table('cctl_alg_costtype', 'cctl_alg_costtype.parquet', [])
-raw_vault.stage_table('cctl_alg_createdbysystem', 'cctl_alg_createdbysystem.parquet', [])
-raw_vault.stage_table('cctl_alg_diagnosis', 'cctl_alg_diagnosis.parquet', [])
-raw_vault.stage_table('cctl_alg_diagnosistype', 'cctl_alg_diagnosistype.parquet', [])
-raw_vault.stage_table('cctl_alg_dicdilindicator', 'cctl_alg_dicdilindicator.parquet', [])
-raw_vault.stage_table('cctl_alg_diseasepattern', 'cctl_alg_diseasepattern.parquet', [])
-raw_vault.stage_table('cctl_alg_driverbehaviourfleet', 'cctl_alg_driverbehaviourfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_driverliabilityfleet', 'cctl_alg_driverliabilityfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_driverstatefleet', 'cctl_alg_driverstatefleet.parquet', [])
-raw_vault.stage_table('cctl_alg_employeeconditions', 'cctl_alg_employeeconditions.parquet', [])
-raw_vault.stage_table('cctl_alg_employeepersontype', 'cctl_alg_employeepersontype.parquet', [])
-raw_vault.stage_table('cctl_alg_emprelationshipfleet', 'cctl_alg_emprelationshipfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_equipment', 'cctl_alg_equipment.parquet', [])
-raw_vault.stage_table('cctl_alg_estimdurofbi', 'cctl_alg_estimdurofbi.parquet', [])
-raw_vault.stage_table('cctl_alg_exposuresubstate', 'cctl_alg_exposuresubstate.parquet', [])
-raw_vault.stage_table('cctl_alg_financiallossitem', 'cctl_alg_financiallossitem.parquet', [])
-raw_vault.stage_table('cctl_alg_freedescription', 'cctl_alg_freedescription.parquet', [])
-raw_vault.stage_table('cctl_alg_fueltype', 'cctl_alg_fueltype.parquet', [])
-raw_vault.stage_table('cctl_alg_function', 'cctl_alg_function.parquet', [])
-raw_vault.stage_table('cctl_alg_glasstype', 'cctl_alg_glasstype.parquet', [])
-raw_vault.stage_table('cctl_alg_gndeduction', 'cctl_alg_gndeduction.parquet', [])
-raw_vault.stage_table('cctl_alg_handlingfees', 'cctl_alg_handlingfees.parquet', [])
-raw_vault.stage_table('cctl_alg_heatingsystem', 'cctl_alg_heatingsystem.parquet', [])
-raw_vault.stage_table('cctl_alg_illnesstype', 'cctl_alg_illnesstype.parquet', [])
-raw_vault.stage_table('cctl_alg_injuredparty', 'cctl_alg_injuredparty.parquet', [])
-raw_vault.stage_table('cctl_alg_insurancetype', 'cctl_alg_insurancetype.parquet', [])
-raw_vault.stage_table('cctl_alg_insuredcharcteristics', 'cctl_alg_insuredcharcteristics.parquet', [])
-raw_vault.stage_table('cctl_alg_insuredpersonalcircle', 'cctl_alg_insuredpersonalcircle.parquet', [])
-raw_vault.stage_table('cctl_alg_insuredvalue', 'cctl_alg_insuredvalue.parquet', [])
-raw_vault.stage_table('cctl_alg_interclaimsgcode', 'cctl_alg_interclaimsgcode.parquet', [])
-raw_vault.stage_table('cctl_alg_interclaimstype', 'cctl_alg_interclaimstype.parquet', [])
-raw_vault.stage_table('cctl_alg_involvedobjects', 'cctl_alg_involvedobjects.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsblamecode', 'cctl_alg_ipsblamecode.parquet', [])
-raw_vault.stage_table('cctl_alg_ipscauseofevent', 'cctl_alg_ipscauseofevent.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsemergingrisk', 'cctl_alg_ipsemergingrisk.parquet', [])
-raw_vault.stage_table('cctl_alg_ipseventtype', 'cctl_alg_ipseventtype.parquet', [])
-raw_vault.stage_table('cctl_alg_ipslawsuit', 'cctl_alg_ipslawsuit.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsmovementvehicle', 'cctl_alg_ipsmovementvehicle.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsroadtype', 'cctl_alg_ipsroadtype.parquet', [])
-raw_vault.stage_table('cctl_alg_ipstypeofloss', 'cctl_alg_ipstypeofloss.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsusagevehicle', 'cctl_alg_ipsusagevehicle.parquet', [])
-raw_vault.stage_table('cctl_alg_ipsvehicletype', 'cctl_alg_ipsvehicletype.parquet', [])
-raw_vault.stage_table('cctl_alg_iszurpartnernetwork', 'cctl_alg_iszurpartnernetwork.parquet', [])
-raw_vault.stage_table('cctl_alg_lctash_elucidation', 'cctl_alg_lctash_elucidation.parquet', [])
-raw_vault.stage_table('cctl_alg_lctash_origliability', 'cctl_alg_lctash_origliability.parquet', [])
-raw_vault.stage_table('cctl_alg_lctash_profmalprcclm', 'cctl_alg_lctash_profmalprcclm.parquet', [])
-raw_vault.stage_table('cctl_alg_lctash_specclaim', 'cctl_alg_lctash_specclaim.parquet', [])
-raw_vault.stage_table('cctl_alg_legacysystem', 'cctl_alg_legacysystem.parquet', [])
-raw_vault.stage_table('cctl_alg_licenseplatetype', 'cctl_alg_licenseplatetype.parquet', [])
-raw_vault.stage_table('cctl_alg_loadconditionfleet', 'cctl_alg_loadconditionfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_loadlosscausefleet', 'cctl_alg_loadlosscausefleet.parquet', [])
-raw_vault.stage_table('cctl_alg_locationmachine', 'cctl_alg_locationmachine.parquet', [])
-raw_vault.stage_table('cctl_alg_lossactivity', 'cctl_alg_lossactivity.parquet', [])
-raw_vault.stage_table('cctl_alg_lossadjustertype', 'cctl_alg_lossadjustertype.parquet', [])
-raw_vault.stage_table('cctl_alg_losscausefleet', 'cctl_alg_losscausefleet.parquet', [])
-raw_vault.stage_table('cctl_alg_lossestrepby', 'cctl_alg_lossestrepby.parquet', [])
-raw_vault.stage_table('cctl_alg_losseventfleet', 'cctl_alg_losseventfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_losseventtype', 'cctl_alg_losseventtype.parquet', [])
-raw_vault.stage_table('cctl_alg_lossplace', 'cctl_alg_lossplace.parquet', [])
-raw_vault.stage_table('cctl_alg_machtechinstallname', 'cctl_alg_machtechinstallname.parquet', [])
-raw_vault.stage_table('cctl_alg_migrationstatus', 'cctl_alg_migrationstatus.parquet', [])
-raw_vault.stage_table('cctl_alg_movementreason', 'cctl_alg_movementreason.parquet', [])
-raw_vault.stage_table('cctl_alg_movementtype', 'cctl_alg_movementtype.parquet', [])
-raw_vault.stage_table('cctl_alg_movementvehiclefleet', 'cctl_alg_movementvehiclefleet.parquet', [])
-raw_vault.stage_table('cctl_alg_ngfnvbclaim', 'cctl_alg_ngfnvbclaim.parquet', [])
-raw_vault.stage_table('cctl_alg_numberofattempts', 'cctl_alg_numberofattempts.parquet', [])
-raw_vault.stage_table('cctl_alg_object', 'cctl_alg_object.parquet', [])
-raw_vault.stage_table('cctl_alg_operatingmode', 'cctl_alg_operatingmode.parquet', [])
-raw_vault.stage_table('cctl_alg_otherinsurertype', 'cctl_alg_otherinsurertype.parquet', [])
-raw_vault.stage_table('cctl_alg_pensiontype', 'cctl_alg_pensiontype.parquet', [])
-raw_vault.stage_table('cctl_alg_periodofvalidity', 'cctl_alg_periodofvalidity.parquet', [])
-raw_vault.stage_table('cctl_alg_policysourcesystem', 'cctl_alg_policysourcesystem.parquet', [])
-raw_vault.stage_table('cctl_alg_policysystem', 'cctl_alg_policysystem.parquet', [])
-raw_vault.stage_table('cctl_alg_pretaxprinciple', 'cctl_alg_pretaxprinciple.parquet', [])
-raw_vault.stage_table('cctl_alg_productcnp', 'cctl_alg_productcnp.parquet', [])
-raw_vault.stage_table('cctl_alg_purfinlosscategory', 'cctl_alg_purfinlosscategory.parquet', [])
-raw_vault.stage_table('cctl_alg_purfinlosstype', 'cctl_alg_purfinlosstype.parquet', [])
-raw_vault.stage_table('cctl_alg_qualificationngf', 'cctl_alg_qualificationngf.parquet', [])
-raw_vault.stage_table('cctl_alg_receiptexisting', 'cctl_alg_receiptexisting.parquet', [])
-raw_vault.stage_table('cctl_alg_referencetype', 'cctl_alg_referencetype.parquet', [])
-raw_vault.stage_table('cctl_alg_reluactivity', 'cctl_alg_reluactivity.parquet', [])
-raw_vault.stage_table('cctl_alg_repairreason', 'cctl_alg_repairreason.parquet', [])
-raw_vault.stage_table('cctl_alg_risklocationtype', 'cctl_alg_risklocationtype.parquet', [])
-raw_vault.stage_table('cctl_alg_roadconditionfleet', 'cctl_alg_roadconditionfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_roadtypefleet', 'cctl_alg_roadtypefleet.parquet', [])
-raw_vault.stage_table('cctl_alg_sanction', 'cctl_alg_sanction.parquet', [])
-raw_vault.stage_table('cctl_alg_segmentationtype', 'cctl_alg_segmentationtype.parquet', [])
-raw_vault.stage_table('cctl_alg_senderdefault', 'cctl_alg_senderdefault.parquet', [])
-raw_vault.stage_table('cctl_alg_specialvehicle', 'cctl_alg_specialvehicle.parquet', [])
-raw_vault.stage_table('cctl_alg_specificbodyparts', 'cctl_alg_specificbodyparts.parquet', [])
-raw_vault.stage_table('cctl_alg_spsettlementtype', 'cctl_alg_spsettlementtype.parquet', [])
-raw_vault.stage_table('cctl_alg_statement', 'cctl_alg_statement.parquet', [])
-raw_vault.stage_table('cctl_alg_strategytype', 'cctl_alg_strategytype.parquet', [])
-raw_vault.stage_table('cctl_alg_subtypeobject', 'cctl_alg_subtypeobject.parquet', [])
-raw_vault.stage_table('cctl_alg_taxationprinciple', 'cctl_alg_taxationprinciple.parquet', [])
-raw_vault.stage_table('cctl_alg_technicalproductcode', 'cctl_alg_technicalproductcode.parquet', [])
-raw_vault.stage_table('cctl_alg_term', 'cctl_alg_term.parquet', [])
-raw_vault.stage_table('cctl_alg_termtype', 'cctl_alg_termtype.parquet', [])
-raw_vault.stage_table('cctl_alg_treatmenttype', 'cctl_alg_treatmenttype.parquet', [])
-raw_vault.stage_table('cctl_alg_tripcategory', 'cctl_alg_tripcategory.parquet', [])
-raw_vault.stage_table('cctl_alg_tripcategoryreason', 'cctl_alg_tripcategoryreason.parquet', [])
-raw_vault.stage_table('cctl_alg_typeofaccident', 'cctl_alg_typeofaccident.parquet', [])
-raw_vault.stage_table('cctl_alg_typeofcompensation', 'cctl_alg_typeofcompensation.parquet', [])
-raw_vault.stage_table('cctl_alg_typeofdailyallowance', 'cctl_alg_typeofdailyallowance.parquet', [])
-raw_vault.stage_table('cctl_alg_typeofinjury', 'cctl_alg_typeofinjury.parquet', [])
-raw_vault.stage_table('cctl_alg_typeofroof', 'cctl_alg_typeofroof.parquet', [])
-raw_vault.stage_table('cctl_alg_use', 'cctl_alg_use.parquet', [])
-raw_vault.stage_table('cctl_alg_validitydriverlicense', 'cctl_alg_validitydriverlicense.parquet', [])
-raw_vault.stage_table('cctl_alg_valuationsi', 'cctl_alg_valuationsi.parquet', [])
-raw_vault.stage_table('cctl_alg_vehicledefectsfleet', 'cctl_alg_vehicledefectsfleet.parquet', [])
-raw_vault.stage_table('cctl_alg_vehiclemodel', 'cctl_alg_vehiclemodel.parquet', [])
-raw_vault.stage_table('cctl_alg_vehicleobjecttype', 'cctl_alg_vehicleobjecttype.parquet', [])
-raw_vault.stage_table('cctl_alg_vehicletype', 'cctl_alg_vehicletype.parquet', [])
-raw_vault.stage_table('cctl_alg_vehicleusage', 'cctl_alg_vehicleusage.parquet', [])
-raw_vault.stage_table('cctl_alg_vehicularcategory', 'cctl_alg_vehicularcategory.parquet', [])
-raw_vault.stage_table('cctl_alg_vendorsourcesystem', 'cctl_alg_vendorsourcesystem.parquet', [])
-raw_vault.stage_table('cctl_alg_yesnoapproved', 'cctl_alg_yesnoapproved.parquet', [])
-raw_vault.stage_table('cctl_algp2_pathwaysmaterial', 'cctl_algp2_pathwaysmaterial.parquet', [])
-raw_vault.stage_table('cctl_algp2_pathwaytype', 'cctl_algp2_pathwaytype.parquet', [])
-raw_vault.stage_table('cctl_assessmentaction', 'cctl_assessmentaction.parquet', [])
-raw_vault.stage_table('cctl_assignmentstatus', 'cctl_assignmentstatus.parquet', [])
-raw_vault.stage_table('cctl_claimclosedoutcometype', 'cctl_claimclosedoutcometype.parquet', [])
-raw_vault.stage_table('cctl_claimreopenedreason', 'cctl_claimreopenedreason.parquet', [])
-raw_vault.stage_table('cctl_claimsecuritytype', 'cctl_claimsecuritytype.parquet', [])
-raw_vault.stage_table('cctl_claimsegment', 'cctl_claimsegment.parquet', [])
-raw_vault.stage_table('cctl_claimsource', 'cctl_claimsource.parquet', [])
-raw_vault.stage_table('cctl_claimstate', 'cctl_claimstate.parquet', [])
-raw_vault.stage_table('cctl_claimstrategy', 'cctl_claimstrategy.parquet', [])
-raw_vault.stage_table('cctl_contentlineitemcategory', 'cctl_contentlineitemcategory.parquet', [])
-raw_vault.stage_table('cctl_country', 'cctl_country.parquet', [])
-raw_vault.stage_table('cctl_coverage', 'cctl_coverage.parquet', [])
-raw_vault.stage_table('cctl_coveragetype', 'cctl_coveragetype.parquet', [])
-raw_vault.stage_table('cctl_covterm', 'cctl_covterm.parquet', [])
-raw_vault.stage_table('cctl_covtermmodelval', 'cctl_covtermmodelval.parquet', [])
-raw_vault.stage_table('cctl_covtermpattern', 'cctl_covtermpattern.parquet', [])
-raw_vault.stage_table('cctl_currency', 'cctl_currency.parquet', [])
-raw_vault.stage_table('cctl_exposureclosedoutcometype', 'cctl_exposureclosedoutcometype.parquet', [])
-raw_vault.stage_table('cctl_exposurereopenedreason', 'cctl_exposurereopenedreason.parquet', [])
-raw_vault.stage_table('cctl_exposurestate', 'cctl_exposurestate.parquet', [])
-raw_vault.stage_table('cctl_exposuretier', 'cctl_exposuretier.parquet', [])
-raw_vault.stage_table('cctl_exposuretype', 'cctl_exposuretype.parquet', [])
-raw_vault.stage_table('cctl_faultrating', 'cctl_faultrating.parquet', [])
-raw_vault.stage_table('cctl_flaggedtype', 'cctl_flaggedtype.parquet', [])
-raw_vault.stage_table('cctl_gendertype', 'cctl_gendertype.parquet', [])
-raw_vault.stage_table('cctl_howreportedtype', 'cctl_howreportedtype.parquet', [])
-raw_vault.stage_table('cctl_icdbodysystem', 'cctl_icdbodysystem.parquet', [])
-raw_vault.stage_table('cctl_incident', 'cctl_incident.parquet', [])
-raw_vault.stage_table('cctl_languagetype', 'cctl_languagetype.parquet', [])
-raw_vault.stage_table('cctl_litigationstatus', 'cctl_litigationstatus.parquet', [])
-raw_vault.stage_table('cctl_lobcode', 'cctl_lobcode.parquet', [])
-raw_vault.stage_table('cctl_localetype', 'cctl_localetype.parquet', [])
-raw_vault.stage_table('cctl_losscause', 'cctl_losscause.parquet', [])
-raw_vault.stage_table('cctl_losspartytype', 'cctl_losspartytype.parquet', [])
-raw_vault.stage_table('cctl_losstype', 'cctl_losstype.parquet', [])
-raw_vault.stage_table('cctl_ownertype', 'cctl_ownertype.parquet', [])
-raw_vault.stage_table('cctl_personrelationtype', 'cctl_personrelationtype.parquet', [])
-raw_vault.stage_table('cctl_phonecountrycode', 'cctl_phonecountrycode.parquet', [])
-raw_vault.stage_table('cctl_policystatus', 'cctl_policystatus.parquet', [])
-raw_vault.stage_table('cctl_policytype', 'cctl_policytype.parquet', [])
-raw_vault.stage_table('cctl_riskunit', 'cctl_riskunit.parquet', [])
-raw_vault.stage_table('cctl_severitytype', 'cctl_severitytype.parquet', [])
-raw_vault.stage_table('cctl_specialhandling', 'cctl_specialhandling.parquet', [])
-raw_vault.stage_table('cctl_state', 'cctl_state.parquet', [])
-raw_vault.stage_table('cctl_subrogationstatus', 'cctl_subrogationstatus.parquet', [])
-raw_vault.stage_table('cctl_systemusertype', 'cctl_systemusertype.parquet', [])
-raw_vault.stage_table('cctl_transporttype', 'cctl_transporttype.parquet', [])
-raw_vault.stage_table('cctl_userexperiencetype', 'cctl_userexperiencetype.parquet', [])
-raw_vault.stage_table('cctl_vacationstatustype', 'cctl_vacationstatustype.parquet', [])
-raw_vault.stage_table('cctl_validationlevel', 'cctl_validationlevel.parquet', [])
-raw_vault.stage_table('cctl_vehiclestyle', 'cctl_vehiclestyle.parquet', [])
-raw_vault.stage_table('cctl_yesno', 'cctl_yesno.parquet', [])
-raw_vault.stage_table('cctl_zonetype', 'cctl_zonetype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_acutespecificinjuries', 'cctl_alg_acutespecificinjuries.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ageofitems', 'cctl_alg_ageofitems.parquet', [])
+raw_vault.stage_from_file('cctl_alg_alarmsystem', 'cctl_alg_alarmsystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_animalspecies', 'cctl_alg_animalspecies.parquet', [])
+raw_vault.stage_from_file('cctl_alg_biincidentlossitem', 'cctl_alg_biincidentlossitem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_bipoints_pel', 'cctl_alg_bipoints_pel.parquet', [])
+raw_vault.stage_from_file('cctl_alg_bitypeofsalary', 'cctl_alg_bitypeofsalary.parquet', [])
+raw_vault.stage_from_file('cctl_alg_biunit', 'cctl_alg_biunit.parquet', [])
+raw_vault.stage_from_file('cctl_alg_brokertype', 'cctl_alg_brokertype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_buildingtype', 'cctl_alg_buildingtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_buildinguse', 'cctl_alg_buildinguse.parquet', [])
+raw_vault.stage_from_file('cctl_alg_cancellationreason', 'cctl_alg_cancellationreason.parquet', [])
+raw_vault.stage_from_file('cctl_alg_categorydamagedobject', 'cctl_alg_categorydamagedobject.parquet', [])
+raw_vault.stage_from_file('cctl_alg_causer', 'cctl_alg_causer.parquet', [])
+raw_vault.stage_from_file('cctl_alg_causingvehicletype', 'cctl_alg_causingvehicletype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_claimflow', 'cctl_alg_claimflow.parquet', [])
+raw_vault.stage_from_file('cctl_alg_claimsgroupsegment', 'cctl_alg_claimsgroupsegment.parquet', [])
+raw_vault.stage_from_file('cctl_alg_claimsubstate', 'cctl_alg_claimsubstate.parquet', [])
+raw_vault.stage_from_file('cctl_alg_cnpmode', 'cctl_alg_cnpmode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_constructionmethod', 'cctl_alg_constructionmethod.parquet', [])
+raw_vault.stage_from_file('cctl_alg_conveyancecode', 'cctl_alg_conveyancecode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_costtype', 'cctl_alg_costtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_createdbysystem', 'cctl_alg_createdbysystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_diagnosis', 'cctl_alg_diagnosis.parquet', [])
+raw_vault.stage_from_file('cctl_alg_diagnosistype', 'cctl_alg_diagnosistype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_dicdilindicator', 'cctl_alg_dicdilindicator.parquet', [])
+raw_vault.stage_from_file('cctl_alg_diseasepattern', 'cctl_alg_diseasepattern.parquet', [])
+raw_vault.stage_from_file('cctl_alg_driverbehaviourfleet', 'cctl_alg_driverbehaviourfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_driverliabilityfleet', 'cctl_alg_driverliabilityfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_driverstatefleet', 'cctl_alg_driverstatefleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_employeeconditions', 'cctl_alg_employeeconditions.parquet', [])
+raw_vault.stage_from_file('cctl_alg_employeepersontype', 'cctl_alg_employeepersontype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_emprelationshipfleet', 'cctl_alg_emprelationshipfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_equipment', 'cctl_alg_equipment.parquet', [])
+raw_vault.stage_from_file('cctl_alg_estimdurofbi', 'cctl_alg_estimdurofbi.parquet', [])
+raw_vault.stage_from_file('cctl_alg_exposuresubstate', 'cctl_alg_exposuresubstate.parquet', [])
+raw_vault.stage_from_file('cctl_alg_financiallossitem', 'cctl_alg_financiallossitem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_freedescription', 'cctl_alg_freedescription.parquet', [])
+raw_vault.stage_from_file('cctl_alg_fueltype', 'cctl_alg_fueltype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_function', 'cctl_alg_function.parquet', [])
+raw_vault.stage_from_file('cctl_alg_glasstype', 'cctl_alg_glasstype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_gndeduction', 'cctl_alg_gndeduction.parquet', [])
+raw_vault.stage_from_file('cctl_alg_handlingfees', 'cctl_alg_handlingfees.parquet', [])
+raw_vault.stage_from_file('cctl_alg_heatingsystem', 'cctl_alg_heatingsystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_illnesstype', 'cctl_alg_illnesstype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_injuredparty', 'cctl_alg_injuredparty.parquet', [])
+raw_vault.stage_from_file('cctl_alg_insurancetype', 'cctl_alg_insurancetype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_insuredcharcteristics', 'cctl_alg_insuredcharcteristics.parquet', [])
+raw_vault.stage_from_file('cctl_alg_insuredpersonalcircle', 'cctl_alg_insuredpersonalcircle.parquet', [])
+raw_vault.stage_from_file('cctl_alg_insuredvalue', 'cctl_alg_insuredvalue.parquet', [])
+raw_vault.stage_from_file('cctl_alg_interclaimsgcode', 'cctl_alg_interclaimsgcode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_interclaimstype', 'cctl_alg_interclaimstype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_involvedobjects', 'cctl_alg_involvedobjects.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsblamecode', 'cctl_alg_ipsblamecode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipscauseofevent', 'cctl_alg_ipscauseofevent.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsemergingrisk', 'cctl_alg_ipsemergingrisk.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipseventtype', 'cctl_alg_ipseventtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipslawsuit', 'cctl_alg_ipslawsuit.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsmovementvehicle', 'cctl_alg_ipsmovementvehicle.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsroadtype', 'cctl_alg_ipsroadtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipstypeofloss', 'cctl_alg_ipstypeofloss.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsusagevehicle', 'cctl_alg_ipsusagevehicle.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ipsvehicletype', 'cctl_alg_ipsvehicletype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_iszurpartnernetwork', 'cctl_alg_iszurpartnernetwork.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lctash_elucidation', 'cctl_alg_lctash_elucidation.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lctash_origliability', 'cctl_alg_lctash_origliability.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lctash_profmalprcclm', 'cctl_alg_lctash_profmalprcclm.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lctash_specclaim', 'cctl_alg_lctash_specclaim.parquet', [])
+raw_vault.stage_from_file('cctl_alg_legacysystem', 'cctl_alg_legacysystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_licenseplatetype', 'cctl_alg_licenseplatetype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_loadconditionfleet', 'cctl_alg_loadconditionfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_loadlosscausefleet', 'cctl_alg_loadlosscausefleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_locationmachine', 'cctl_alg_locationmachine.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lossactivity', 'cctl_alg_lossactivity.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lossadjustertype', 'cctl_alg_lossadjustertype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_losscausefleet', 'cctl_alg_losscausefleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lossestrepby', 'cctl_alg_lossestrepby.parquet', [])
+raw_vault.stage_from_file('cctl_alg_losseventfleet', 'cctl_alg_losseventfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_losseventtype', 'cctl_alg_losseventtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_lossplace', 'cctl_alg_lossplace.parquet', [])
+raw_vault.stage_from_file('cctl_alg_machtechinstallname', 'cctl_alg_machtechinstallname.parquet', [])
+raw_vault.stage_from_file('cctl_alg_migrationstatus', 'cctl_alg_migrationstatus.parquet', [])
+raw_vault.stage_from_file('cctl_alg_movementreason', 'cctl_alg_movementreason.parquet', [])
+raw_vault.stage_from_file('cctl_alg_movementtype', 'cctl_alg_movementtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_movementvehiclefleet', 'cctl_alg_movementvehiclefleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_ngfnvbclaim', 'cctl_alg_ngfnvbclaim.parquet', [])
+raw_vault.stage_from_file('cctl_alg_numberofattempts', 'cctl_alg_numberofattempts.parquet', [])
+raw_vault.stage_from_file('cctl_alg_object', 'cctl_alg_object.parquet', [])
+raw_vault.stage_from_file('cctl_alg_operatingmode', 'cctl_alg_operatingmode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_otherinsurertype', 'cctl_alg_otherinsurertype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_pensiontype', 'cctl_alg_pensiontype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_periodofvalidity', 'cctl_alg_periodofvalidity.parquet', [])
+raw_vault.stage_from_file('cctl_alg_policysourcesystem', 'cctl_alg_policysourcesystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_policysystem', 'cctl_alg_policysystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_pretaxprinciple', 'cctl_alg_pretaxprinciple.parquet', [])
+raw_vault.stage_from_file('cctl_alg_productcnp', 'cctl_alg_productcnp.parquet', [])
+raw_vault.stage_from_file('cctl_alg_purfinlosscategory', 'cctl_alg_purfinlosscategory.parquet', [])
+raw_vault.stage_from_file('cctl_alg_purfinlosstype', 'cctl_alg_purfinlosstype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_qualificationngf', 'cctl_alg_qualificationngf.parquet', [])
+raw_vault.stage_from_file('cctl_alg_receiptexisting', 'cctl_alg_receiptexisting.parquet', [])
+raw_vault.stage_from_file('cctl_alg_referencetype', 'cctl_alg_referencetype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_reluactivity', 'cctl_alg_reluactivity.parquet', [])
+raw_vault.stage_from_file('cctl_alg_repairreason', 'cctl_alg_repairreason.parquet', [])
+raw_vault.stage_from_file('cctl_alg_risklocationtype', 'cctl_alg_risklocationtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_roadconditionfleet', 'cctl_alg_roadconditionfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_roadtypefleet', 'cctl_alg_roadtypefleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_sanction', 'cctl_alg_sanction.parquet', [])
+raw_vault.stage_from_file('cctl_alg_segmentationtype', 'cctl_alg_segmentationtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_senderdefault', 'cctl_alg_senderdefault.parquet', [])
+raw_vault.stage_from_file('cctl_alg_specialvehicle', 'cctl_alg_specialvehicle.parquet', [])
+raw_vault.stage_from_file('cctl_alg_specificbodyparts', 'cctl_alg_specificbodyparts.parquet', [])
+raw_vault.stage_from_file('cctl_alg_spsettlementtype', 'cctl_alg_spsettlementtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_statement', 'cctl_alg_statement.parquet', [])
+raw_vault.stage_from_file('cctl_alg_strategytype', 'cctl_alg_strategytype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_subtypeobject', 'cctl_alg_subtypeobject.parquet', [])
+raw_vault.stage_from_file('cctl_alg_taxationprinciple', 'cctl_alg_taxationprinciple.parquet', [])
+raw_vault.stage_from_file('cctl_alg_technicalproductcode', 'cctl_alg_technicalproductcode.parquet', [])
+raw_vault.stage_from_file('cctl_alg_term', 'cctl_alg_term.parquet', [])
+raw_vault.stage_from_file('cctl_alg_termtype', 'cctl_alg_termtype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_treatmenttype', 'cctl_alg_treatmenttype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_tripcategory', 'cctl_alg_tripcategory.parquet', [])
+raw_vault.stage_from_file('cctl_alg_tripcategoryreason', 'cctl_alg_tripcategoryreason.parquet', [])
+raw_vault.stage_from_file('cctl_alg_typeofaccident', 'cctl_alg_typeofaccident.parquet', [])
+raw_vault.stage_from_file('cctl_alg_typeofcompensation', 'cctl_alg_typeofcompensation.parquet', [])
+raw_vault.stage_from_file('cctl_alg_typeofdailyallowance', 'cctl_alg_typeofdailyallowance.parquet', [])
+raw_vault.stage_from_file('cctl_alg_typeofinjury', 'cctl_alg_typeofinjury.parquet', [])
+raw_vault.stage_from_file('cctl_alg_typeofroof', 'cctl_alg_typeofroof.parquet', [])
+raw_vault.stage_from_file('cctl_alg_use', 'cctl_alg_use.parquet', [])
+raw_vault.stage_from_file('cctl_alg_validitydriverlicense', 'cctl_alg_validitydriverlicense.parquet', [])
+raw_vault.stage_from_file('cctl_alg_valuationsi', 'cctl_alg_valuationsi.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehicledefectsfleet', 'cctl_alg_vehicledefectsfleet.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehiclemodel', 'cctl_alg_vehiclemodel.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehicleobjecttype', 'cctl_alg_vehicleobjecttype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehicletype', 'cctl_alg_vehicletype.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehicleusage', 'cctl_alg_vehicleusage.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vehicularcategory', 'cctl_alg_vehicularcategory.parquet', [])
+raw_vault.stage_from_file('cctl_alg_vendorsourcesystem', 'cctl_alg_vendorsourcesystem.parquet', [])
+raw_vault.stage_from_file('cctl_alg_yesnoapproved', 'cctl_alg_yesnoapproved.parquet', [])
+raw_vault.stage_from_file('cctl_algp2_pathwaysmaterial', 'cctl_algp2_pathwaysmaterial.parquet', [])
+raw_vault.stage_from_file('cctl_algp2_pathwaytype', 'cctl_algp2_pathwaytype.parquet', [])
+raw_vault.stage_from_file('cctl_assessmentaction', 'cctl_assessmentaction.parquet', [])
+raw_vault.stage_from_file('cctl_assignmentstatus', 'cctl_assignmentstatus.parquet', [])
+raw_vault.stage_from_file('cctl_claimclosedoutcometype', 'cctl_claimclosedoutcometype.parquet', [])
+raw_vault.stage_from_file('cctl_claimreopenedreason', 'cctl_claimreopenedreason.parquet', [])
+raw_vault.stage_from_file('cctl_claimsecuritytype', 'cctl_claimsecuritytype.parquet', [])
+raw_vault.stage_from_file('cctl_claimsegment', 'cctl_claimsegment.parquet', [])
+raw_vault.stage_from_file('cctl_claimsource', 'cctl_claimsource.parquet', [])
+raw_vault.stage_from_file('cctl_claimstate', 'cctl_claimstate.parquet', [])
+raw_vault.stage_from_file('cctl_claimstrategy', 'cctl_claimstrategy.parquet', [])
+raw_vault.stage_from_file('cctl_contentlineitemcategory', 'cctl_contentlineitemcategory.parquet', [])
+raw_vault.stage_from_file('cctl_country', 'cctl_country.parquet', [])
+raw_vault.stage_from_file('cctl_coverage', 'cctl_coverage.parquet', [])
+raw_vault.stage_from_file('cctl_coveragetype', 'cctl_coveragetype.parquet', [])
+raw_vault.stage_from_file('cctl_covterm', 'cctl_covterm.parquet', [])
+raw_vault.stage_from_file('cctl_covtermmodelval', 'cctl_covtermmodelval.parquet', [])
+raw_vault.stage_from_file('cctl_covtermpattern', 'cctl_covtermpattern.parquet', [])
+raw_vault.stage_from_file('cctl_currency', 'cctl_currency.parquet', [])
+raw_vault.stage_from_file('cctl_exposureclosedoutcometype', 'cctl_exposureclosedoutcometype.parquet', [])
+raw_vault.stage_from_file('cctl_exposurereopenedreason', 'cctl_exposurereopenedreason.parquet', [])
+raw_vault.stage_from_file('cctl_exposurestate', 'cctl_exposurestate.parquet', [])
+raw_vault.stage_from_file('cctl_exposuretier', 'cctl_exposuretier.parquet', [])
+raw_vault.stage_from_file('cctl_exposuretype', 'cctl_exposuretype.parquet', [])
+raw_vault.stage_from_file('cctl_faultrating', 'cctl_faultrating.parquet', [])
+raw_vault.stage_from_file('cctl_flaggedtype', 'cctl_flaggedtype.parquet', [])
+raw_vault.stage_from_file('cctl_gendertype', 'cctl_gendertype.parquet', [])
+raw_vault.stage_from_file('cctl_howreportedtype', 'cctl_howreportedtype.parquet', [])
+raw_vault.stage_from_file('cctl_icdbodysystem', 'cctl_icdbodysystem.parquet', [])
+raw_vault.stage_from_file('cctl_incident', 'cctl_incident.parquet', [])
+raw_vault.stage_from_file('cctl_languagetype', 'cctl_languagetype.parquet', [])
+raw_vault.stage_from_file('cctl_litigationstatus', 'cctl_litigationstatus.parquet', [])
+raw_vault.stage_from_file('cctl_lobcode', 'cctl_lobcode.parquet', [])
+raw_vault.stage_from_file('cctl_localetype', 'cctl_localetype.parquet', [])
+raw_vault.stage_from_file('cctl_losscause', 'cctl_losscause.parquet', [])
+raw_vault.stage_from_file('cctl_losspartytype', 'cctl_losspartytype.parquet', [])
+raw_vault.stage_from_file('cctl_losstype', 'cctl_losstype.parquet', [])
+raw_vault.stage_from_file('cctl_ownertype', 'cctl_ownertype.parquet', [])
+raw_vault.stage_from_file('cctl_personrelationtype', 'cctl_personrelationtype.parquet', [])
+raw_vault.stage_from_file('cctl_phonecountrycode', 'cctl_phonecountrycode.parquet', [])
+raw_vault.stage_from_file('cctl_policystatus', 'cctl_policystatus.parquet', [])
+raw_vault.stage_from_file('cctl_policytype', 'cctl_policytype.parquet', [])
+raw_vault.stage_from_file('cctl_riskunit', 'cctl_riskunit.parquet', [])
+raw_vault.stage_from_file('cctl_severitytype', 'cctl_severitytype.parquet', [])
+raw_vault.stage_from_file('cctl_specialhandling', 'cctl_specialhandling.parquet', [])
+raw_vault.stage_from_file('cctl_state', 'cctl_state.parquet', [])
+raw_vault.stage_from_file('cctl_subrogationstatus', 'cctl_subrogationstatus.parquet', [])
+raw_vault.stage_from_file('cctl_systemusertype', 'cctl_systemusertype.parquet', [])
+raw_vault.stage_from_file('cctl_transporttype', 'cctl_transporttype.parquet', [])
+raw_vault.stage_from_file('cctl_userexperiencetype', 'cctl_userexperiencetype.parquet', [])
+raw_vault.stage_from_file('cctl_vacationstatustype', 'cctl_vacationstatustype.parquet', [])
+raw_vault.stage_from_file('cctl_validationlevel', 'cctl_validationlevel.parquet', [])
+raw_vault.stage_from_file('cctl_vehiclestyle', 'cctl_vehiclestyle.parquet', [])
+raw_vault.stage_from_file('cctl_yesno', 'cctl_yesno.parquet', [])
+raw_vault.stage_from_file('cctl_zonetype', 'cctl_zonetype.parquet', [])
 
 #
 #
@@ -2063,967 +2063,967 @@ raw_vault.stage_table('cctl_zonetype', 'cctl_zonetype.parquet', [])
 #
 #
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_acutespecificinjuries', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_acutespecificinjuries', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ageofitems', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ageofitems', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_alarmsystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_alarmsystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_animalspecies', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_animalspecies', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_biincidentlossitem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_biincidentlossitem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_bipoints_pel', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_bipoints_pel', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_bitypeofsalary', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_bitypeofsalary', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_biunit', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_biunit', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_brokertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_brokertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_buildingtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_buildingtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_buildinguse', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_buildinguse', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_cancellationreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_cancellationreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_categorydamagedobject', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_categorydamagedobject', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_causer', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_causer', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_causingvehicletype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_causingvehicletype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_claimflow', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_claimflow', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_claimsgroupsegment', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_claimsgroupsegment', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_claimsubstate', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_claimsubstate', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_cnpmode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_cnpmode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_constructionmethod', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_constructionmethod', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_conveyancecode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_conveyancecode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_costtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_costtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_createdbysystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_createdbysystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_diagnosis', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_diagnosis', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_diagnosistype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_diagnosistype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_dicdilindicator', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_dicdilindicator', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_diseasepattern', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_diseasepattern', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_driverbehaviourfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_driverbehaviourfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_driverliabilityfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_driverliabilityfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_driverstatefleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_driverstatefleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_employeeconditions', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_employeeconditions', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_employeepersontype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_employeepersontype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_emprelationshipfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_emprelationshipfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_equipment', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_equipment', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_estimdurofbi', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_estimdurofbi', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_exposuresubstate', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_exposuresubstate', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_financiallossitem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_financiallossitem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_freedescription', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_freedescription', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_fueltype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_fueltype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_function', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_function', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_glasstype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_glasstype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_gndeduction', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_gndeduction', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_handlingfees', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_handlingfees', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_heatingsystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_heatingsystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_illnesstype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_illnesstype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_injuredparty', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_injuredparty', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_insurancetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_insurancetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_insuredcharcteristics', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_insuredcharcteristics', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_insuredpersonalcircle', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_insuredpersonalcircle', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_insuredvalue', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_insuredvalue', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_interclaimsgcode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_interclaimsgcode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_interclaimstype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_interclaimstype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_involvedobjects', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_involvedobjects', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsblamecode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsblamecode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipscauseofevent', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipscauseofevent', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsemergingrisk', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsemergingrisk', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipseventtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipseventtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipslawsuit', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipslawsuit', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsmovementvehicle', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsmovementvehicle', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsroadtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsroadtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipstypeofloss', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipstypeofloss', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsusagevehicle', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsusagevehicle', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ipsvehicletype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ipsvehicletype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_iszurpartnernetwork', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_iszurpartnernetwork', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lctash_elucidation', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lctash_elucidation', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lctash_origliability', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lctash_origliability', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lctash_profmalprcclm', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lctash_profmalprcclm', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lctash_specclaim', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lctash_specclaim', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_legacysystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_legacysystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_licenseplatetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_licenseplatetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_loadconditionfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_loadconditionfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_loadlosscausefleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_loadlosscausefleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_locationmachine', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_locationmachine', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lossactivity', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lossactivity', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lossadjustertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lossadjustertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_losscausefleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_losscausefleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lossestrepby', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lossestrepby', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_losseventfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_losseventfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_losseventtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_losseventtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_lossplace', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_lossplace', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_machtechinstallname', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_machtechinstallname', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_migrationstatus', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_migrationstatus', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_movementreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_movementreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_movementtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_movementtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_movementvehiclefleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_movementvehiclefleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_ngfnvbclaim', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_ngfnvbclaim', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_numberofattempts', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_numberofattempts', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_object', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_object', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_operatingmode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_operatingmode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_otherinsurertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_otherinsurertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_pensiontype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_pensiontype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_periodofvalidity', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_periodofvalidity', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_policysourcesystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_policysourcesystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_policysystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_policysystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_pretaxprinciple', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_pretaxprinciple', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_productcnp', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_productcnp', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_purfinlosscategory', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_purfinlosscategory', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_purfinlosstype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_purfinlosstype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_qualificationngf', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_qualificationngf', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_receiptexisting', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_receiptexisting', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_referencetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_referencetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_reluactivity', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_reluactivity', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_repairreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_repairreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_risklocationtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_risklocationtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_roadconditionfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_roadconditionfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_roadtypefleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_roadtypefleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_sanction', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_sanction', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_segmentationtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_segmentationtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_senderdefault', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_senderdefault', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_specialvehicle', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_specialvehicle', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_specificbodyparts', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_specificbodyparts', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_spsettlementtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_spsettlementtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_statement', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_statement', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_strategytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_strategytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_subtypeobject', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_subtypeobject', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_taxationprinciple', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_taxationprinciple', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_technicalproductcode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_technicalproductcode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_term', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_term', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_termtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_termtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_treatmenttype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_treatmenttype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_tripcategory', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_tripcategory', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_tripcategoryreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_tripcategoryreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_typeofaccident', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_typeofaccident', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_typeofcompensation', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_typeofcompensation', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_typeofdailyallowance', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_typeofdailyallowance', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_typeofinjury', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_typeofinjury', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_typeofroof', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_typeofroof', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_use', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_use', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_validitydriverlicense', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_validitydriverlicense', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_valuationsi', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_valuationsi', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehicledefectsfleet', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehicledefectsfleet', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehiclemodel', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehiclemodel', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehicleobjecttype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehicleobjecttype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehicletype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehicletype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehicleusage', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehicleusage', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vehicularcategory', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vehicularcategory', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_vendorsourcesystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_vendorsourcesystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_alg_yesnoapproved', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_alg_yesnoapproved', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_algp2_pathwaysmaterial', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_algp2_pathwaysmaterial', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_algp2_pathwaytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_algp2_pathwaytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_assessmentaction', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_assessmentaction', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_assignmentstatus', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_assignmentstatus', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimclosedoutcometype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimclosedoutcometype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimreopenedreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimreopenedreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimsecuritytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimsecuritytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimsegment', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimsegment', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimsource', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimsource', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimstate', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimstate', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_claimstrategy', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_claimstrategy', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_contentlineitemcategory', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_contentlineitemcategory', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_country', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_country', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_coverage', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_coverage', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_coveragetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_coveragetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_covterm', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_covterm', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_covtermmodelval', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_covtermmodelval', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_covtermpattern', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_covtermpattern', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_currency', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_currency', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_exposureclosedoutcometype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_exposureclosedoutcometype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_exposurereopenedreason', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_exposurereopenedreason', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_exposurestate', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_exposurestate', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_exposuretier', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_exposuretier', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_exposuretype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_exposuretype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_faultrating', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_faultrating', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_flaggedtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_flaggedtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_gendertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_gendertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_howreportedtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_howreportedtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_icdbodysystem', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_icdbodysystem', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_incident', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_incident', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_languagetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_languagetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_litigationstatus', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_litigationstatus', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_lobcode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_lobcode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_localetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_localetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_losscause', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_losscause', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_losspartytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_losspartytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_losstype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_losstype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_ownertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_ownertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_personrelationtype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_personrelationtype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_phonecountrycode', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_phonecountrycode', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_policystatus', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_policystatus', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_policytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_policytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_riskunit', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_riskunit', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_severitytype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_severitytype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_specialhandling', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_specialhandling', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_state', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_state', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_subrogationstatus', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_subrogationstatus', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_systemusertype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_systemusertype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_transporttype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_transporttype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_userexperiencetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_userexperiencetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_vacationstatustype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_vacationstatustype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_validationlevel', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_validationlevel', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_vehiclestyle', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_vehiclestyle', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_yesno', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_yesno', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
 
-raw_vault.load_code_references_from_prepared_stage_table('cctl_zonetype', 'REF__TYPELIST', 'ID', [
+raw_vault.load_code_references_from_prepared_stage_from_file('cctl_zonetype', 'REF__TYPELIST', 'ID', [
         'S_Alg_RM', 'NAME', 'S_Alg_PL', 'S_de', 'S_Alg_NL', 'S_Alg_PT', 'S_fr', 'L_it', 'L_en_US', 'PRIORITY', 'L_Alg_ES', 'TYPECODE', 'S_en_US', 'RETIRED', 'L_Alg_RM', 'L_Alg_PL', 'L_de', 'L_Alg_NL', 'S_it', 'L_Alg_PT',
         'DESCRIPTION', 'S_Alg_ES', 'L_fr'
     ])
