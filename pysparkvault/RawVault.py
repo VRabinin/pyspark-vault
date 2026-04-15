@@ -174,6 +174,7 @@ class RawVault:
             ColumnDefinition(self.conventions.hdiff_column_name(), StringType()),
             ColumnDefinition(self.conventions.load_date_column_name(), TimestampType()),
             ColumnDefinition(self.conventions.load_end_date_column_name(), TimestampType()),
+            ColumnDefinition(self.conventions.is_current_column_name(), BooleanType()),
         ] + attribute_columns
 
         if self.config.optimize_partitioning:
@@ -977,10 +978,10 @@ class RawVault:
             .join(sat_df, join_condition, how='left_anti') \
             .distinct()
 
-        # Drop stale load_end_date from existing records so it can be recomputed for the full table.
+        # Drop stale load_end_date and is_current from existing records so they can be recomputed for the full table.
         # DataFrame.drop() silently ignores columns that don't exist (first-time load scenario).
-        new_records_df = new_records_df.drop(self.conventions.load_end_date_column_name())
-        sat_base_df = sat_df.drop(self.conventions.load_end_date_column_name())
+        new_records_df = new_records_df.drop(self.conventions.load_end_date_column_name()).drop(self.conventions.is_current_column_name())
+        sat_base_df = sat_df.drop(self.conventions.load_end_date_column_name()).drop(self.conventions.is_current_column_name())
         combined_df = sat_base_df.union(new_records_df)
         # combined_df = sat_df\
         #     .union(new_records_df)\
@@ -998,6 +999,9 @@ class RawVault:
                 F.lead(self.conventions.load_date_column_name()).over(window_spec) - F.expr("INTERVAL 1 SECONDS"),
                 F.lit(self.conventions.LOAD_END_DATE_HIGH_WATERMARK).cast('timestamp')
             )
+        ).withColumn(
+            self.conventions.is_current_column_name(),
+            F.col(self.conventions.load_end_date_column_name()) == F.lit(self.conventions.LOAD_END_DATE_HIGH_WATERMARK).cast('timestamp')
         )
 
         bucket_columns = [self.conventions.hkey_column_name(), self.conventions.load_date_column_name()]

@@ -66,6 +66,7 @@ class DataVaultConventions:
         hdiff='HDIFF',
         load_date='LOAD_DATE', 
         load_end_date='LOAD_END_DATE',
+        is_current='IS_CURRENT',
         cdc_load_date = 'CDC_LOAD_DATE',
         record_source='RECORD_SOURCE',
         ref_group='GROUP',
@@ -92,6 +93,7 @@ class DataVaultConventions:
         self.HDIFF = hdiff
         self.LOAD_DATE = load_date
         self.LOAD_END_DATE = load_end_date
+        self.IS_CURRENT = is_current
         self.CDC_LOAD_DATE = cdc_load_date
         self.RECORD_SOURCE = record_source
         self.REF_GROUP = ref_group
@@ -131,6 +133,12 @@ class DataVaultConventions:
         Return the column name for LOAD_END_DATE column including configured prefix.
         """
         return f'{self.COLUMN_PREFIX}{self.LOAD_END_DATE}'
+
+    def is_current_column_name(self) -> str:
+        """
+        Return the column name for IS_CURRENT column including configured prefix.
+        """
+        return f'{self.COLUMN_PREFIX}{self.IS_CURRENT}'
 
     def record_source_column_name(self) -> str:
         """
@@ -441,28 +449,31 @@ class TableProcessor:
     def read_from_dbt(
         self,
         model_sql: str,
-        ref_schema: str = "default",
+        references: Optional[Dict[str, str]] = None,
         variables: Optional[Dict[str, Any]] = None,
     ) -> DataFrame:
         """
         Render a dbt-style Jinja SQL model and execute it via spark.sql.
 
         Supported Jinja helpers:
-          - ``ref('model')``           — resolves to ``catalog.ref_schema.model``
+          - ``ref('model')``           — looks up fully qualified name in *references* dict
           - ``source('src', 'table')`` — resolves to ``catalog.src.table``
           - ``config(...)``            — no-op (stripped from the rendered SQL)
           - ``var('name', default)``   — looks up a value from *variables*
 
         :param model_sql   - SQL string with Jinja tags as written in a dbt model file.
-        :param ref_schema  - Default schema used when resolving ``ref()`` calls.
+        :param references  - Mapping of model names to fully qualified table names (catalog.schema.table).
         :param variables   - Optional mapping of variable names to values for ``var()``.
         :returns A DataFrame produced by executing the rendered SQL.
         """
         variables = variables or {}
+        references = references or {}
         catalog = self.catalog
 
-        def _ref(model: str, schema: str = ref_schema) -> str:
-            return f"{catalog}.{schema}.{model}"
+        def _ref(model: str) -> str:
+            if model not in references:
+                raise ValueError(f"Model '{model}' not found in references. Available: {list(references.keys())}")
+            return references[model]
 
         def _source(source_name: str, table_name: str) -> str:
             return f"{catalog}.{source_name}.{table_name}"

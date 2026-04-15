@@ -147,22 +147,22 @@ def test_read_from_dbt_plain_sql(spark, dbt_processor):
 
 
 def test_read_from_dbt_ref_resolves_to_qualified_name(spark, dbt_processor):
-    """{{ ref('model', 'schema') }} must expand to spark_catalog.schema.model."""
+    """{{ ref('model') }} must expand to the fully qualified name from references dict."""
     spark.createDataFrame([(7,)], ["qty"]).write.mode("overwrite").saveAsTable("products")
     df = dbt_processor.read_from_dbt(
-        "SELECT qty FROM {{ ref('products', 'default') }}",
-        ref_schema="default",
+        "SELECT qty FROM {{ ref('products') }}",
+        references={"products": "spark_catalog.default.products"},
     )
     assert df.count() == 1
     assert df.collect()[0]["qty"] == 7
 
 
-def test_read_from_dbt_ref_uses_default_schema(spark, dbt_processor):
-    """{{ ref('tbl') }} without explicit schema uses ref_schema argument."""
+def test_read_from_dbt_ref_uses_references_dict(spark, dbt_processor):
+    """{{ ref('tbl') }} looks up the fully qualified name from references dict."""
     spark.createDataFrame([(99,)], ["score"]).write.mode("overwrite").saveAsTable("scores")
     df = dbt_processor.read_from_dbt(
         "SELECT score FROM {{ ref('scores') }}",
-        ref_schema="default",
+        references={"scores": "spark_catalog.default.scores"},
     )
     assert df.collect()[0]["score"] == 99
 
@@ -181,7 +181,7 @@ def test_read_from_dbt_config_is_stripped(spark, dbt_processor):
     spark.createDataFrame([(1,)], ["id"]).write.mode("overwrite").saveAsTable("cfg_test")
     df = dbt_processor.read_from_dbt(
         "{{ config(materialized='table', tags=['daily']) }}\nSELECT id FROM {{ ref('cfg_test') }}",
-        ref_schema="default",
+        references={"cfg_test": "spark_catalog.default.cfg_test"},
     )
     assert df.count() == 1
 
@@ -209,6 +209,15 @@ def test_read_from_dbt_returns_dataframe(spark, dbt_processor):
     from pyspark.sql import DataFrame
     result = dbt_processor.read_from_dbt("SELECT 'ok' AS status")
     assert isinstance(result, DataFrame)
+
+
+def test_read_from_dbt_raises_error_when_model_not_in_references(spark, dbt_processor):
+    """{{ ref('unknown_model') }} must raise ValueError when model is not in references dict."""
+    with pytest.raises(ValueError, match="Model 'unknown_model' not found in references"):
+        dbt_processor.read_from_dbt(
+            "SELECT * FROM {{ ref('unknown_model') }}",
+            references={"other_model": "spark_catalog.default.other_model"},
+        )
 
 
 # ---------------------------------------------------------------------------

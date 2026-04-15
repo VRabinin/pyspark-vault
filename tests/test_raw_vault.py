@@ -116,6 +116,8 @@ def test_create_satellite_creates_table(spark, raw_vault, config):
     assert conventions.hkey_column_name() in df.columns
     assert conventions.hdiff_column_name() in df.columns
     assert conventions.load_date_column_name() in df.columns
+    assert conventions.load_end_date_column_name() in df.columns
+    assert conventions.is_current_column_name() in df.columns
     assert "name" in df.columns
     assert "age" in df.columns
 
